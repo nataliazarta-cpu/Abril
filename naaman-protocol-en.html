@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMPTY VESSELS: The Capacity & Promise Protocol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --ice-blue: #E0F2FE;
+            --lavender: #E9D5FF;
+            --mint: #D1FAE5;
+            --soft-gold: #FDE68A;
+            --copper: #FECDD3;
+            --off-white: #FAFAFA;
+            --deep-teal: #0F766E;
+            --charcoal: #374151;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--off-white);
+            color: var(--charcoal);
+        }
+        
+        .font-display {
+            font-weight: 300;
+            letter-spacing: -0.02em;
+        }
+        
+        .font-display strong {
+            font-weight: 800;
+        }
+        
+        /* Oil Drop Animation */
+        .oil-drop {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--soft-gold);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            opacity: 0;
+            animation: oilFall 3s ease-in infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes oilFall {
+            0% { transform: translateY(-20px) scale(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(100vh) scale(1); opacity: 0; }
+        }
+        
+        /* Vessel Fill Animation */
+        .vessel-fill {
+            transition: height 1s ease-out;
+            background: linear-gradient(180deg, var(--soft-gold) 0%, #F59E0B 100%);
+        }
+        
+        /* Progress Ring */
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.5s ease;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        
+        /* Card Hover */
+        .vessel-card {
+            transition: all 0.3s ease;
+        }
+        
+        .vessel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(15, 118, 110, 0.1);
+        }
+        
+        /* Promise Badge */
+        .promise-badge {
+            background: linear-gradient(135deg, var(--soft-gold) 0%, var(--copper) 100%);
+        }
+        
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom Checkbox */
+        .custom-checkbox:checked + div {
+            background-color: var(--deep-teal);
+            border-color: var(--deep-teal);
+        }
+        
+        .custom-checkbox:checked + div svg {
+            display: block;
+        }
+        
+        /* Scripture Card */
+        .scripture-card {
+            background: linear-gradient(180deg, #FFFFFF 0%, var(--ice-blue) 100%);
+            border-left: 4px solid var(--soft-gold);
+        }
+        
+        /* Commitment Card */
+        .commitment-card {
+            border-left: 4px solid var(--deep-teal);
+        }
+        
+        /* Particle Animation */
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--soft-gold);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-80px) translateX(30px); opacity: 0; }
+        }
+        
+        /* Modal */
+        .modal-enter {
+            animation: modalSlide 0.4s ease-out;
+        }
+        
+        @keyframes modalSlide {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Ripple Effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(224, 242, 254, 0.6);
+            transform: scale(0);
+            animation: rippleEffect 0.6s ease-out;
+            pointer-events: none;
+        }
+        
+        @keyframes rippleEffect {
+            to { transform: scale(4); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Oil Drop Container -->
+    <div id="oilContainer" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md border-b border-gray-100 z-50">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-teal-700 flex items-center justify-center text-white text-lg">
+                    🏺
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold tracking-widest text-teal-700 uppercase">Empty Vessels</h1>
+                    <p class="text-xs text-gray-500">2 Kings 3-4</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">Capacity</p>
+                    <p class="text-lg font-bold text-teal-700" id="capacityText">0 Vessels</p>
+                </div>
+                <div class="w-12 h-12 relative">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle cx="24" cy="24" r="20" fill="none" stroke="#E5E7EB" stroke-width="4"/>
+                        <circle id="capacityCircle" cx="24" cy="24" r="20" fill="none" stroke="#0F766E" stroke-width="4" 
+                            stroke-dasharray="125.6" stroke-dashoffset="125.6" stroke-linecap="round" class="progress-ring-circle"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-16 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 text-teal-700 text-xs font-semibold tracking-wider mb-6">
+                <i class="fas fa-bible"></i>
+                2 KINGS 4:3-4
+            </div>
+            
+            <h2 class="text-4xl sm:text-6xl font-display mb-6 leading-tight">
+                Your <strong>Capacity</strong> Determines Your <strong>Provision</strong>
+            </h2>
+            
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
+                The widow was not healed by the quality of the oil, but by the quantity of empty vessels she prepared. 
+                Each empty vessel is a declaration of faith: "I believe God is abundant."
+            </p>
+            
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="startJourney()" class="px-8 py-4 bg-teal-700 text-white rounded-full font-semibold hover:bg-teal-800 transition-all flex items-center gap-2 shadow-lg shadow-teal-700/20">
+                    <span>Prepare My Vessels</span>
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+                <button onclick="scrollToCovenant()" class="px-8 py-4 bg-white text-teal-700 border-2 border-teal-700 rounded-full font-semibold hover:bg-teal-50 transition-all">
+                    View My Covenant
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripture Experience -->
+    <section class="py-16 px-6 bg-gradient-to-b from-white to-slate-50 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h3 class="text-2xl font-bold mb-2">The Word That Multiplies</h3>
+                <p class="text-gray-600">Reveal the verse word by word</p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-slate-100 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-200 rounded-full blur-3xl opacity-20"></div>
+                
+                <div class="relative z-10 space-y-6" id="scriptureReveal">
+                    <p class="text-2xl md:text-3xl font-display text-gray-300 transition-all duration-700 leading-relaxed" data-line="1">
+                        "Go, borrow vessels from everywhere, from all your neighbors—empty vessels..."
+                    </p>
+                    <p class="text-2xl md:text-3xl font-display text-gray-300 transition-all duration-700 delay-100 leading-relaxed" data-line="2">
+                        "Not a few..."
+                    </p>
+                    <p class="text-2xl md:text-3xl font-display text-gray-300 transition-all duration-700 delay-200 leading-relaxed" data-line="3">
+                        "Then go in and shut the door behind you and your sons, and pour into all those vessels..."
+                    </p>
+                    <p class="text-2xl md:text-3xl font-display text-gray-300 transition-all duration-700 delay-300 leading-relaxed" data-line="4">
+                        "And set aside the full ones."
+                    </p>
+                </div>
+                
+                <button onclick="revealScripture()" class="mt-8 px-6 py-3 bg-teal-700 text-white rounded-full font-medium hover:bg-teal-800 transition-all flex items-center gap-2 mx-auto">
+                    <i class="fas fa-lightbulb"></i>
+                    Reveal Word
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Vessel System -->
+    <section id="vessels" class="py-16 px-6 relative z-10">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <h3 class="text-2xl font-bold mb-2">The Vessels Of Your Faith</h3>
+                <p class="text-gray-600">Each area of your life is a container. How many will you prepare today?</p>
+            </div>
+
+            <div class="grid md:grid-cols-5 gap-4 mb-8" id="vesselGrid">
+                <!-- Generated by JS -->
+            </div>
+
+            <div class="text-center">
+                <button onclick="addVessel()" class="px-6 py-3 bg-white border-2 border-teal-700 text-teal-700 rounded-full font-semibold hover:bg-teal-50 transition-all flex items-center gap-2 mx-auto">
+                    <i class="fas fa-plus"></i>
+                    Add Empty Vessel
+                </button>
+                <p class="text-sm text-gray-500 mt-3">Maximum 40 vessels (2 Kings 4:6)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Vessel Detail -->
+    <section id="vesselDetail" class="hidden py-8 px-6 relative z-10">
+        <div class="max-w-2xl mx-auto bg-white rounded-3xl p-8 shadow-xl border border-slate-100">
+            <div class="flex items-start gap-6 mb-6">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-100 to-yellow-200 flex items-center justify-center text-3xl" id="vesselIcon">
+                    🏺
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-yellow-600 uppercase tracking-wider">Vessel <span id="vesselNumber">1</span></span>
+                    <h4 class="text-2xl font-bold mt-1" id="vesselTitle">Prayer</h4>
+                    <p class="text-gray-600 mt-2" id="vesselDesc">Preparing daily time for intercession.</p>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Scripture -->
+                <div class="scripture-card rounded-xl p-4">
+                    <p class="text-sm text-gray-700 italic mb-2" id="vesselScripture">"You will not see wind or rain, yet this valley will be filled with water."</p>
+                    <p class="text-xs text-gray-500">2 Kings 3:17</p>
+                </div>
+
+                <!-- Commitment (My Part) -->
+                <div class="commitment-card bg-teal-50 rounded-xl p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fas fa-hand-holding-heart text-teal-700"></i>
+                        <span class="font-semibold text-teal-700 text-sm uppercase tracking-wider">My Commitment</span>
+                    </div>
+                    <p class="text-gray-700 mb-4" id="vesselCommitment">I will reserve 30 minutes each morning for prayer, even when I don't "feel" anything. Obedience precedes emotion.</p>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" class="custom-checkbox hidden" onchange="fillVessel(this)">
+                        <div class="w-6 h-6 rounded border-2 border-teal-300 flex items-center justify-center transition-all bg-white">
+                            <svg class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700">I confirm my commitment to fill this vessel</span>
+                    </label>
+                </div>
+
+                <!-- Promise (God's Part) -->
+                <div class="bg-yellow-50 rounded-xl p-4 border-l-4 border-yellow-400">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fas fa-gift text-yellow-600"></i>
+                        <span class="font-semibold text-yellow-700 text-sm uppercase tracking-wider">God's Promise</span>
+                    </div>
+                    <p class="text-gray-700" id="vesselPromise">"Call to Me, and I will answer you, and show you great and mighty things, which you do not know." (Jeremiah 33:3)</p>
+                </div>
+
+                <!-- Action -->
+                <button onclick="pourOil()" class="w-full py-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 rounded-xl font-bold hover:from-yellow-500 hover:to-yellow-600 transition-all relative overflow-hidden" id="pourBtn">
+                    <span class="relative z-10 flex items-center justify-center gap-2">
+                        <i class="fas fa-oil-can"></i>
+                        Pour Oil Now
+                    </span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Covenant Journal -->
+    <section id="covenant" class="py-16 px-6 bg-slate-50 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold">My Oil Covenant</h3>
+                    <p class="text-gray-600 mt-1">Active commitments and promises</p>
+                </div>
+                <button onclick="exportCovenant()" class="px-4 py-2 bg-white text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-100 transition-all border border-slate-200">
+                    <i class="fas fa-download mr-2"></i>Export
+                </button>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6" id="covenantCards">
+                <!-- Dynamic Content -->
+            </div>
+
+            <!-- New Entry -->
+            <div class="mt-8 bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+                <h4 class="font-semibold mb-4">New Covenant Entry</h4>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">My Commitment (What I Will Do)</label>
+                        <textarea id="newCommitment" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-none" placeholder="e.g., I will borrow vessels of my time to serve others..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Promise I Claim (What God Will Do)</label>
+                        <textarea id="newPromise" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 outline-none resize-none" placeholder="e.g., 'My God shall supply all your need according to His riches in glory'..."></textarea>
+                    </div>
+                    <button onclick="addCovenantEntry()" class="w-full py-3 bg-teal-700 text-white rounded-xl font-semibold hover:bg-teal-800 transition-all">
+                        Seal Covenant With Oil
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Dashboard -->
+    <section class="py-16 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <h3 class="text-2xl font-bold text-center mb-12">Multiplication Metrics</h3>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-slate-100">
+                    <div class="text-3xl font-bold text-teal-700 mb-1" id="statVessels">0</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider">Vessels</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-slate-100">
+                    <div class="text-3xl font-bold text-yellow-600 mb-1" id="statFilled">0</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider">Filled</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-slate-100">
+                    <div class="text-3xl font-bold text-purple-600 mb-1" id="statCovenants">0</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider">Covenants</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-slate-100">
+                    <div class="text-3xl font-bold text-rose-600 mb-1" id="statStreak">0</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider">Day Streak</div>
+                </div>
+            </div>
+
+            <!-- Weekly Activity -->
+            <div class="mt-8 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <h4 class="font-semibold mb-6">Weekly Activity</h4>
+                <div class="flex items-end justify-between h-32 gap-2" id="weeklyChart">
+                    <!-- Generated by JS -->
+                </div>
+                <div class="flex justify-between mt-2 text-xs text-gray-400">
+                    <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Scriptures -->
+    <section class="py-16 px-6 bg-teal-700 text-white relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <h3 class="text-2xl font-bold text-center mb-12">Key Scriptures</h3>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-6">
+                    <div class="flex items-center gap-2 mb-4 text-yellow-300">
+                        <i class="fas fa-water"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">2 Kings 3:17</span>
+                    </div>
+                    <p class="text-lg leading-relaxed mb-4">
+                        "You Will Not See Wind Or Rain, Yet This Valley Will Be Filled With Water."
+                    </p>
+                    <div class="flex items-center gap-2 text-sm text-teal-200">
+                        <span>Promise:</span>
+                        <span class="text-white">Invisible provision</span>
+                    </div>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur rounded-2xl p-6">
+                    <div class="flex items-center gap-2 mb-4 text-yellow-300">
+                        <i class="fas fa-oil-can"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">2 Kings 4:6</span>
+                    </div>
+                    <p class="text-lg leading-relaxed mb-4">
+                        "When The Vessels Were Full, She Said To Her Son: Bring Me Another Vessel. And He Said: There Are No More Vessels. Then The Oil Ceased."
+                    </p>
+                    <div class="flex items-center gap-2 text-sm text-teal-200">
+                        <span>Principle:</span>
+                        <span class="text-white">Capacity limits blessing</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <button onclick="copyAllScriptures()" class="px-6 py-3 bg-white/20 rounded-full hover:bg-white/30 transition-all flex items-center gap-2 mx-auto">
+                    <i class="fas fa-copy"></i>
+                    Copy All Scriptures
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 bg-slate-900 text-slate-400 text-center relative z-10">
+        <p class="text-sm">Empty Vessels Protocol • 2 Kings 3-4</p>
+        <p class="text-xs mt-2">"Your Capacity To Receive Determines The Measure Of The Blessing"</p>
+    </footer>
+
+    <script>
+        // Data Structure
+        const vesselTypes = [
+            {
+                id: 1,
+                title: "Prayer",
+                desc: "Daily time for intercession and listening",
+                icon: "🙏",
+                scripture: "You will not see wind or rain, yet this valley will be filled with water.",
+                reference: "2 Kings 3:17",
+                commitment: "I will reserve 30 minutes each morning for prayer, even when I don't 'feel' anything immediately.",
+                promise: "Call to Me, and I will answer you, and show you great and mighty things, which you do not know. (Jeremiah 33:3)"
+            },
+            {
+                id: 2,
+                title: "Word",
+                desc: "Reading and meditating on Scripture",
+                icon: "📖",
+                scripture: "And set aside the full ones.",
+                reference: "2 Kings 4:4",
+                commitment: "I will read one chapter daily without rush, letting the oil fill my vessel.",
+                promise: "Your word is a lamp to my feet and a light to my path. (Psalm 119:105)"
+            },
+            {
+                id: 3,
+                title: "Relationships",
+                desc: "Investment in community and family",
+                icon: "💝",
+                scripture: "Borrow vessels from everywhere, from all your neighbors.",
+                reference: "2 Kings 4:3",
+                commitment: "I will contact one person this week to serve them, not to be served.",
+                promise: "Give, and it will be given to you: good measure, pressed down, shaken together, and running over. (Luke 6:38)"
+            },
+            {
+                id: 4,
+                title: "Service",
+                desc: "Using gifts to build others up",
+                icon: "⚡",
+                scripture: "And pour into all those vessels.",
+                reference: "2 Kings 4:4",
+                commitment: "I will offer my time to a cause that does not directly benefit me.",
+                promise: "He who sows sparingly will also reap sparingly, and he who sows bountifully will also reap bountifully. (2 Corinthians 9:6)"
+            },
+            {
+                id: 5,
+                title: "Generosity",
+                desc: "Finances and resources",
+                icon: "💰",
+                scripture: "Sell the oil and pay your debt, and you and your sons live on the rest.",
+                reference: "2 Kings 4:7",
+                commitment: "I will set aside 10% of my income as firstfruit, not as leftover.",
+                promise: "Bring all the tithes into the storehouse... and try Me now in this. (Malachi 3:10)"
+            }
+        ];
+
+        let userVessels = JSON.parse(localStorage.getItem('emptyVessels') || '[]');
+        let covenantEntries = JSON.parse(localStorage.getItem('vesselCovenant') || '[]');
+        let currentVesselIndex = 0;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createOilDrops();
+            renderVesselGrid();
+            updateProgress();
+            renderCovenantCards();
+            updateStats();
+            renderWeeklyChart();
+        });
+
+        function createOilDrops() {
+            const container = document.getElementById('oilContainer');
+            setInterval(() => {
+                const drop = document.createElement('div');
+                drop.className = 'oil-drop';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(drop);
+                setTimeout(() => drop.remove(), 4000);
+            }, 1500);
+        }
+
+        function revealScripture() {
+            const lines = document.querySelectorAll('#scriptureReveal p');
+            lines.forEach((line, idx) => {
+                setTimeout(() => {
+                    line.classList.remove('text-gray-300');
+                    line.classList.add('text-gray-800', 'font-medium');
+                }, idx * 400);
+            });
+        }
+
+        function renderVesselGrid() {
+            const grid = document.getElementById('vesselGrid');
+            grid.innerHTML = vesselTypes.map((vessel, idx) => {
+                const userVessel = userVessels.find(v => v.typeId === vessel.id);
+                const isFilled = userVessel?.filled || false;
+                const count = userVessels.filter(v => v.typeId === vessel.id).length || 1;
+                
+                return `
+                    <div onclick="selectVessel(${idx})" 
+                         class="vessel-card cursor-pointer bg-white rounded-2xl p-4 text-center border-2 ${isFilled ? 'border-yellow-400 bg-yellow-50' : 'border-transparent hover:border-slate-200'} relative overflow-hidden">
+                        <div class="text-3xl mb-2">${isFilled ? '✨' : vessel.icon}</div>
+                        <div class="text-sm font-semibold text-gray-800 leading-tight mb-1">${vessel.title}</div>
+                        <div class="text-xs text-gray-500">${count} vessel${count > 1 ? 's' : ''}</div>
+                        ${isFilled ? '<div class="mt-2 text-xs text-yellow-600 font-medium">Filled</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectVessel(index) {
+            const vessel = vesselTypes[index];
+            document.getElementById('vesselDetail').classList.remove('hidden');
+            document.getElementById('vesselIcon').textContent = vessel.icon;
+            document.getElementById('vesselNumber').textContent = vessel.id;
+            document.getElementById('vesselTitle').textContent = vessel.title;
+            document.getElementById('vesselDesc').textContent = vessel.desc;
+            document.getElementById('vesselScripture').textContent = `"${vessel.scripture}"`;
+            document.getElementById('vesselCommitment').textContent = vessel.commitment;
+            document.getElementById('vesselPromise').textContent = vessel.promise;
+            
+            currentVesselIndex = index;
+            document.getElementById('vesselDetail').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function addVessel() {
+            if (userVessels.length >= 40) {
+                alert('You have reached the limit of 40 vessels. The oil will flow to the last one!');
+                return;
+            }
+            
+            const newVessel = {
+                id: Date.now(),
+                typeId: vesselTypes[currentVesselIndex]?.id || 1,
+                filled: false,
+                date: new Date().toISOString()
+            };
+            
+            userVessels.push(newVessel);
+            localStorage.setItem('emptyVessels', JSON.stringify(userVessels));
+            
+            renderVesselGrid();
+            updateProgress();
+            updateStats();
+            
+            const btn = event.target;
+            btn.classList.add('scale-95');
+            setTimeout(() => btn.classList.remove('scale-95'), 150);
+        }
+
+        function fillVessel(checkbox) {
+            if (checkbox.checked) {
+                const vessel = userVessels.find(v => v.typeId === vesselTypes[currentVesselIndex].id && !v.filled);
+                if (vessel) {
+                    vessel.filled = true;
+                    vessel.filledDate = new Date().toISOString();
+                    localStorage.setItem('emptyVessels', JSON.stringify(userVessels));
+                    
+                    setTimeout(() => {
+                        renderVesselGrid();
+                        updateProgress();
+                        updateStats();
+                    }, 500);
+                }
+            }
+        }
+
+        function pourOil() {
+            const btn = document.getElementById('pourBtn');
+            
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = (40 + Math.random() * 20) + '%';
+                    particle.style.top = '50%';
+                    particle.style.animationDelay = Math.random() * 0.3 + 's';
+                    btn.appendChild(particle);
+                    setTimeout(() => particle.remove(), 3000);
+                }, i * 50);
+            }
+            
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = '50%';
+            ripple.style.top = '50%';
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
+            btn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+            
+            const checkbox = btn.parentElement.querySelector('.custom-checkbox');
+            if (!checkbox.checked) {
+                checkbox.checked = true;
+                fillVessel(checkbox);
+            }
+        }
+
+        function updateProgress() {
+            const total = userVessels.length || 1;
+            const filled = userVessels.filter(v => v.filled).length;
+            const percentage = Math.min((filled / 40) * 100, 100);
+            
+            document.getElementById('capacityText').textContent = `${filled}/40 Vessels`;
+            const circle = document.getElementById('capacityCircle');
+            const circumference = 2 * Math.PI * 20;
+            const offset = circumference - (percentage / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+        }
+
+        function addCovenantEntry() {
+            const commitment = document.getElementById('newCommitment').value.trim();
+            const promise = document.getElementById('newPromise').value.trim();
+            
+            if (!commitment || !promise) {
+                alert('Please complete both your commitment and the promise you claim.');
+                return;
+            }
+            
+            const entry = {
+                id: Date.now(),
+                commitment,
+                promise,
+                date: new Date().toLocaleDateString('en-US'),
+                completed: false
+            };
+            
+            covenantEntries.unshift(entry);
+            localStorage.setItem('vesselCovenant', JSON.stringify(covenantEntries));
+            
+            document.getElementById('newCommitment').value = '';
+            document.getElementById('newPromise').value = '';
+            
+            renderCovenantCards();
+            updateStats();
+        }
+
+        function renderCovenantCards() {
+            const container = document.getElementById('covenantCards');
+            
+            if (covenantEntries.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-center col-span-2 py-8">No covenant entries yet. Create your first one above.</p>';
+                return;
+            }
+            
+            container.innerHTML = covenantEntries.map(entry => `
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs text-gray-400">${entry.date}</span>
+                        <button onclick="toggleCovenant(${entry.id})" class="text-sm ${entry.completed ? 'text-teal-600' : 'text-gray-400'} hover:text-teal-700">
+                            <i class="fas ${entry.completed ? 'fa-check-circle' : 'fa-circle'} text-lg"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-hand-holding-heart text-teal-600 text-sm"></i>
+                            <span class="text-xs font-bold text-teal-700 uppercase tracking-wider">My Commitment</span>
+                        </div>
+                        <p class="text-gray-700 text-sm leading-relaxed">${entry.commitment}</p>
+                    </div>
+                    
+                    <div class="bg-yellow-50 rounded-xl p-3 border-l-4 border-yellow-400">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fas fa-gift text-yellow-600 text-sm"></i>
+                            <span class="text-xs font-bold text-yellow-700 uppercase tracking-wider">Promise</span>
+                        </div>
+                        <p class="text-gray-700 text-sm italic">${entry.promise}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCovenant(id) {
+            const entry = covenantEntries.find(e => e.id === id);
+            if (entry) {
+                entry.completed = !entry.completed;
+                localStorage.setItem('vesselCovenant', JSON.stringify(covenantEntries));
+                renderCovenantCards();
+                updateStats();
+            }
+        }
+
+        function updateStats() {
+            const filled = userVessels.filter(v => v.filled).length;
+            document.getElementById('statVessels').textContent = userVessels.length;
+            document.getElementById('statFilled').textContent = filled;
+            document.getElementById('statCovenants').textContent = covenantEntries.length;
+            
+            const completedCovenants = covenantEntries.filter(e => e.completed).length;
+            document.getElementById('statStreak').textContent = completedCovenants;
+        }
+
+        function renderWeeklyChart() {
+            const chart = document.getElementById('weeklyChart');
+            const data = [1, 3, 2, 4, 2, 5, userVessels.length];
+            
+            chart.innerHTML = data.map((value, idx) => {
+                const height = Math.min((value / 10) * 100, 100);
+                const isToday = idx === 6;
+                return `
+                    <div class="flex-1 flex flex-col items-center justify-end">
+                        <div class="w-full rounded-t-lg transition-all duration-500 ${isToday ? 'bg-teal-600' : 'bg-slate-200'}" 
+                             style="height: ${Math.max(height, 10)}%"></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function startJourney() {
+            document.getElementById('vessels').scrollIntoView({ behavior: 'smooth' });
+            selectVessel(0);
+        }
+
+        function scrollToCovenant() {
+            document.getElementById('covenant').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyAllScriptures() {
+            const scriptures = [
+                "You will not see wind or rain, yet this valley will be filled with water. - 2 Kings 3:17",
+                "When the vessels were full, she said to her son: Bring me another vessel. And he said: There are no more vessels. Then the oil ceased. - 2 Kings 4:6",
+                "Go, borrow vessels from everywhere, from all your neighbors—empty vessels, not a few. - 2 Kings 4:3"
+            ].join('\n\n');
+            
+            navigator.clipboard.writeText(scriptures).then(() => {
+                alert('Scriptures copied to clipboard');
+            });
+        }
+
+        function exportCovenant() {
+            const data = {
+                vessels: userVessels,
+                covenants: covenantEntries,
+                exportDate: new Date().toISOString(),
+                scripture: "2 Kings 3-4"
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `empty-vessels-covenant-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+    </script>
+</body>
+</html>
