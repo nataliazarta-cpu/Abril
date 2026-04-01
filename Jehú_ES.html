@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relaciones Maduras: La Experiencia de Lealtad de Jehú</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Cormorant+Garamond:wght@500&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2 { font-family: 'Cormorant Garamond', serif; }
+    .glass { background: rgba(255,255,255,0.75); backdrop-filter: blur(12px); }
+  </style>
+</head>
+<body class="bg-[#F8F4F0] text-[#2C3E50]">
+  <div class="max-w-4xl mx-auto p-6">
+    <!-- HERO -->
+    <div class="text-center py-12 border-b border-[#98D8C8]">
+      <h1 class="text-5xl font-light text-[#2C3E50] mb-2">Relaciones Maduras</h1>
+      <p class="text-3xl text-[#98D8C8] tracking-widest">La Experiencia de Lealtad de Jehú</p>
+      <p class="mt-6 max-w-md mx-auto text-lg text-[#5D6B7E]">¿Estás lista para cortar lo que Dios ya cortó por amor?</p>
+      <div class="mt-8 flex justify-center gap-4">
+        <button onclick="startExperience()" class="px-8 py-4 bg-[#98D8C8] hover:bg-[#7CC9B5] text-white rounded-3xl font-medium flex items-center gap-3 transition-all">
+          <i class="fas fa-play"></i> INICIAR TALLER INTERACTIVO
+        </button>
+      </div>
+    </div>
+
+    <!-- MAPA INTERACTIVO -->
+    <div id="mapSection" class="hidden mt-12">
+      <h2 class="text-2xl mb-6 text-center">Mapa de Relaciones en 2 Reyes 9-10</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- Jehú -->
+        <div onclick="selectCharacter(0)" class="glass p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all border border-[#98D8C8]/30">
+          <div class="text-[#98D8C8] text-4xl mb-3">👑</div>
+          <h3 class="font-medium">Jehú</h3>
+          <p class="text-sm text-[#5D6B7E]">Ungido • Celoso • Parcial</p>
+          <div id="status0" class="text-xs mt-2 text-emerald-600">Click para explorar</div>
+        </div>
+        <!-- Jezabel -->
+        <div onclick="selectCharacter(1)" class="glass p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all border border-[#98D8C8]/30">
+          <div class="text-[#E8A5A5] text-4xl mb-3">👑</div>
+          <h3 class="font-medium">Jezabel</h3>
+          <p class="text-sm text-[#5D6B7E]">Idolatría • Manipulación</p>
+        </div>
+        <!-- Hijos de Acab -->
+        <div onclick="selectCharacter(2)" class="glass p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all border border-[#98D8C8]/30">
+          <div class="text-[#E8A5A5] text-4xl mb-3">👦</div>
+          <h3 class="font-medium">70 hijos de Acab</h3>
+          <p class="text-sm text-[#5D6B7E]">Lazos de sangre vs. pacto</p>
+        </div>
+        <!-- Baal -->
+        <div onclick="selectCharacter(3)" class="glass p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all border border-[#98D8C8]/30">
+          <div class="text-[#E8A5A5] text-4xl mb-3">🛕</div>
+          <h3 class="font-medium">Siervos de Baal</h3>
+          <p class="text-sm text-[#5D6B7E]">Relaciones que Dios destruye</p>
+        </div>
+        <!-- Jonadab -->
+        <div onclick="selectCharacter(4)" class="glass p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all border border-[#98D8C8]/30">
+          <div class="text-[#98D8C8] text-4xl mb-3">🤝</div>
+          <h3 class="font-medium">Jonadab</h3>
+          <p class="text-sm text-[#5D6B7E]">Alianza recta</p>
+        </div>
+      </div>
+
+      <!-- DETALLE -->
+      <div id="detailPanel" class="hidden mt-10 glass p-8 rounded-3xl">
+        <h3 id="detailTitle" class="text-2xl mb-4"></h3>
+        <p id="detailText" class="text-[#5D6B7E]"></p>
+      </div>
+    </div>
+
+    <!-- PROGRESO -->
+    <div class="mt-12 flex justify-between items-center">
+      <div class="text-sm flex items-center gap-2">
+        <div class="w-3 h-3 bg-[#98D8C8] rounded-full animate-pulse"></div>
+        PROGRESO HOY
+      </div>
+      <div id="progressBar" class="h-2 w-64 bg-gray-200 rounded-full overflow-hidden">
+        <div id="progressFill" class="h-2 bg-[#98D8C8] w-0 transition-all"></div>
+      </div>
+      <span id="progressText" class="text-xs font-medium text-[#98D8C8]">0/3 reflexiones</span>
+    </div>
+
+    <!-- APPLY TO YOUR LIFE -->
+    <div class="mt-12 glass p-8 rounded-3xl">
+      <h3 class="text-xl mb-6">Aplica a tu vida hoy</h3>
+      <div class="space-y-6">
+        <div>
+          <label class="block text-sm mb-2">1. ¿Qué relación necesito evaluar con honestidad?</label>
+          <input id="input1" type="text" placeholder="Escribe aquí..." class="w-full p-4 rounded-2xl border border-[#98D8C8]/30 focus:outline-none focus:border-[#98D8C8]">
+        </div>
+        <div>
+          <label class="block text-sm mb-2">2. ¿Qué cortaría Jehú hoy en mi vida?</label>
+          <input id="input2" type="text" placeholder="Escribe aquí..." class="w-full p-4 rounded-2xl border border-[#98D8C8]/30 focus:outline-none focus:border-[#98D8C8]">
+        </div>
+        <button onclick="saveReflections()" class="w-full py-4 bg-[#2C3E50] text-white rounded-3xl hover:bg-black transition-all">GUARDAR COMPROMISOS (se guardan en tu dispositivo)</button>
+      </div>
+    </div>
+
+    <!-- COMPROMISOS Y PROMESAS -->
+    <div class="mt-8 grid grid-cols-2 gap-6 text-sm">
+      <div class="bg-white p-6 rounded-3xl border border-[#98D8C8]/20">
+        <strong class="text-emerald-700">Tus compromisos</strong>
+        <ul id="commitmentsList" class="mt-4 space-y-2 text-xs"></ul>
+      </div>
+      <div class="bg-white p-6 rounded-3xl border border-[#98D8C8]/20">
+        <strong class="text-emerald-700">Promesas de Dios</strong>
+        <p class="text-xs mt-4">"Tus hijos se sentarán sobre el trono… hasta la cuarta generación" (10:30) – Dios honra el celo, pero desea el corazón entero.</p>
+      </div>
+    </div>
+
+    <!-- SHARE -->
+    <button onclick="shareExperience()" class="mt-12 mx-auto flex items-center gap-3 text-[#98D8C8] hover:text-[#7CC9B5] transition-all">
+      <i class="fas fa-share-alt"></i> COMPARTIR EN REDES
+    </button>
+
+    <!-- ORACIÓN FINAL -->
+    <div class="mt-16 text-center">
+      <p class="italic text-[#5D6B7E] max-w-xs mx-auto">"Señor, que mi celo por Ti sea completo y mis relaciones reflejen Tu pureza. Amén."</p>
+    </div>
+  </div>
+
+  <script>
+    function initTailwind() {
+      tailwind.config = {
+        content: [],
+        theme: { extend: { colors: { mint: '#98D8C8', nude: '#F8F4F0' } } }
+      };
+    }
+    let progress = 0;
+    const characters = [
+      { name: "Jehú", text: "Ungido para cortar lo corrupto. Su celo era visible, pero su obediencia parcial nos recuerda que las relaciones maduras exigen entrega total." },
+      { name: "Jezabel", text: "Representa alianzas tóxicas que corrompen familias enteras. Dios la juzgó. ¿Qué Jezabel estás protegiendo?" },
+      { name: "Hijos de Acab", text: "Lazos de sangre no están por encima del pacto con Dios. Jehú los cortó. ¿Qué lazo familiar necesitas evaluar?" },
+      { name: "Siervos de Baal", text: "Relaciones que honran ídolos. Jehú las exterminó. Hoy el Espíritu te invita a purificar tus círculos." },
+      { name: "Jonadab", text: "Alianza recta. Jehú lo subió al carro porque su corazón era recto. Busca amistades que suban contigo al carro del celo por Dios." }
+    ];
+
+    function startExperience() {
+      document.getElementById('mapSection').classList.remove('hidden');
+      document.getElementById('mapSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function selectCharacter(i) {
+      document.getElementById('detailTitle').textContent = characters[i].name;
+      document.getElementById('detailText').innerHTML = `<p class="text-[#5D6B7E]">${characters[i].text}</p>`;
+      document.getElementById('detailPanel').classList.remove('hidden');
+      progress = Math.min(3, progress + 1);
+      document.getElementById('progressFill').style.width = `${(progress/3)*100}%`;
+      document.getElementById('progressText').textContent = `${progress}/3 reflexiones`;
+    }
+
+    function saveReflections() {
+      const val1 = document.getElementById('input1').value;
+      const val2 = document.getElementById('input2').value;
+      if (val1 || val2) {
+        localStorage.setItem('jehuReflections', JSON.stringify({q1: val1, q2: val2, date: new Date().toISOString()}));
+        document.getElementById('commitmentsList').innerHTML = `<li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> ${val1}</li><li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> ${val2}</li>`;
+        progress = 3;
+        document.getElementById('progressFill').style.width = '100%';
+        alert('✅ Compromisos guardados en tu navegador. ¡Dios te guarde!');
+      }
+    }
+
+    function shareExperience() {
+      const text = "Hoy hice el taller 'Relaciones Maduras: La Experiencia de Lealtad de Jehú'. Corté lo corrupto por amor a Cristo. ¿Y tú? #DevocionalNataliaZarta";
+      navigator.clipboard.writeText(text).then(() => alert('📋 Texto copiado para compartir en redes!'));
+    }
+
+    window.onload = initTailwind;
+  </script>
+</body>
+</html>
