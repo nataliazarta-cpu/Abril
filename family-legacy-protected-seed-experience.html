@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Legacy: The Protected Seed Experience</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Cormorant+Garamond:wght@500&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2 { font-family: 'Cormorant Garamond', serif; }
+    .glass { background: rgba(255,255,255,0.75); backdrop-filter: blur(12px); }
+  </style>
+</head>
+<body class="bg-[#F8F4F0] text-[#2C3E50]">
+  <div class="max-w-4xl mx-auto p-6">
+    <!-- HERO -->
+    <div class="text-center py-12 border-b border-[#98D8C8]">
+      <h1 class="text-5xl font-light text-[#2C3E50] mb-2">Family Legacy</h1>
+      <p class="text-3xl text-[#98D8C8] tracking-widest">The Protected Seed Experience</p>
+      <p class="mt-6 max-w-md mx-auto text-lg text-[#5D6B7E]">God hides, protects, and reveals His purpose in your family. Are you ready to meditate and act?</p>
+      <div class="mt-8 flex justify-center gap-4">
+        <button onclick="startMeditation()" class="px-8 py-4 bg-[#98D8C8] hover:bg-[#7CC9B5] text-white rounded-3xl font-medium flex items-center gap-3 transition-all">
+          <i class="fas fa-seedling"></i> START INTERACTIVE MEDITATION
+        </button>
+      </div>
+    </div>
+
+    <!-- MEDITATION CARDS -->
+    <div id="meditationSection" class="hidden mt-12">
+      <h2 class="text-2xl mb-6 text-center">Meditation in 2 Kings 11-12</h2>
+      <div class="space-y-6">
+        <div onclick="openVerse(0)" class="glass p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all">11:2 — God uses a brave aunt to protect the child. What are you protecting today?</div>
+        <div onclick="openVerse(1)" class="glass p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all">11:12 — They anoint a 7-year-old king. What will you anoint in your family?</div>
+        <div onclick="openVerse(2)" class="glass p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all">11:17 — Covenant renewed. Will you renew the covenant in your home?</div>
+        <div onclick="openVerse(3)" class="glass p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all">12:2 — He did what was right under mentorship. Who is your Jehoiada?</div>
+        <div onclick="openVerse(4)" class="glass p-6 rounded-3xl cursor-pointer hover:shadow-xl transition-all">12:7 — Repair the cracks of the temple. What family crack will you repair?</div>
+      </div>
+
+      <!-- PANEL DETALLE -->
+      <div id="versePanel" class="hidden mt-10 glass p-8 rounded-3xl">
+        <h3 id="verseTitle" class="text-xl mb-4"></h3>
+        <p id="verseText" class="text-[#5D6B7E]"></p>
+        <textarea id="personalReflection" placeholder="Write your personal meditation here..." class="w-full mt-6 p-4 rounded-2xl border border-[#98D8C8]/30 focus:outline-none focus:border-[#98D8C8]"></textarea>
+      </div>
+    </div>
+
+    <!-- PROGRESO -->
+    <div class="mt-12 flex justify-between items-center">
+      <div class="text-sm flex items-center gap-2">
+        <div class="w-3 h-3 bg-[#98D8C8] rounded-full animate-pulse"></div>
+        MEDITATION PROGRESS
+      </div>
+      <div id="progressBar" class="h-2 w-64 bg-gray-200 rounded-full overflow-hidden">
+        <div id="progressFill" class="h-2 bg-[#98D8C8] w-0 transition-all"></div>
+      </div>
+      <span id="progressText" class="text-xs font-medium text-[#98D8C8]">0/3 meditations</span>
+    </div>
+
+    <!-- APPLY TO YOUR LIFE -->
+    <div class="mt-12 glass p-8 rounded-3xl">
+      <h3 class="text-xl mb-6">Apply to Your Family Today</h3>
+      <div class="space-y-6">
+        <div>
+          <label class="block text-sm mb-2">1. What family “seed” am I called to protect?</label>
+          <input id="input1" type="text" placeholder="Write here..." class="w-full p-4 rounded-2xl border border-[#98D8C8]/30 focus:outline-none focus:border-[#98D8C8]">
+        </div>
+        <div>
+          <label class="block text-sm mb-2">2. What covenant will I renew this week in my home?</label>
+          <input id="input2" type="text" placeholder="Write here..." class="w-full p-4 rounded-2xl border border-[#98D8C8]/30 focus:outline-none focus:border-[#98D8C8]">
+        </div>
+        <button onclick="saveJournal()" class="w-full py-4 bg-[#2C3E50] text-white rounded-3xl hover:bg-black transition-all">SAVE TO MY FAMILY JOURNAL</button>
+      </div>
+    </div>
+
+    <!-- COMPROMISOS Y PROMESAS -->
+    <div class="mt-8 grid grid-cols-2 gap-6 text-sm">
+      <div class="bg-white p-6 rounded-3xl border border-[#98D8C8]/20">
+        <strong class="text-emerald-700">Your Family Commitments</strong>
+        <ul id="commitmentsList" class="mt-4 space-y-2 text-xs"></ul>
+      </div>
+      <div class="bg-white p-6 rounded-3xl border border-[#98D8C8]/20">
+        <strong class="text-emerald-700">God's Promise</strong>
+        <p class="text-xs mt-4">"He made a covenant between the LORD and the king and the people, that they should be the LORD's people" (11:17) – God still guards your lineage.</p>
+      </div>
+    </div>
+
+    <!-- SHARE -->
+    <button onclick="shareExperience()" class="mt-12 mx-auto flex items-center gap-3 text-[#98D8C8] hover:text-[#7CC9B5] transition-all">
+      <i class="fas fa-share-alt"></i> SHARE ON SOCIAL MEDIA
+    </button>
+
+    <!-- ORACIÓN FINAL -->
+    <div class="mt-16 text-center">
+      <p class="italic text-[#5D6B7E] max-w-xs mx-auto">"Father, protect my family as You protected Joash. Anoint us and restore us for Your glory. Amen."</p>
+    </div>
+  </div>
+
+  <script>
+    function initTailwind() {
+      tailwind.config = { theme: { extend: { colors: { mint: '#98D8C8', nude: '#F8F4F0' } } } };
+    }
+    let progress = 0;
+    const verses = [
+      { title: "11:2 — Family Protection", text: "Jehosheba hid the child. God uses family members to save the legacy." },
+      { title: "11:12 — Anointing", text: "The 7-year-old king is anointed. God reveals His purpose at the perfect time." },
+      { title: "11:17 — Covenant", text: "Covenant renewed. Today you can renew it in your home." },
+      { title: "12:2 — Mentorship", text: "Joash did what was right under Jehoiada's guidance. Who is your Jehoiada?" },
+      { title: "12:7 — Restoration", text: "Repair the cracks of the temple. What family crack will you repair?" }
+    ];
+
+    function startMeditation() {
+      document.getElementById('meditationSection').classList.remove('hidden');
+      document.getElementById('meditationSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openVerse(i) {
+      document.getElementById('verseTitle').textContent = verses[i].title;
+      document.getElementById('verseText').innerHTML = `<p>${verses[i].text}</p>`;
+      document.getElementById('versePanel').classList.remove('hidden');
+      progress = Math.min(3, progress + 1);
+      document.getElementById('progressFill').style.width = `${(progress/3)*100}%`;
+      document.getElementById('progressText').textContent = `${progress}/3 meditations`;
+    }
+
+    function saveJournal() {
+      const val1 = document.getElementById('input1').value.trim();
+      const val2 = document.getElementById('input2').value.trim();
+      if (val1 || val2) {
+        localStorage.setItem('familySeedJournal', JSON.stringify({q1: val1, q2: val2, date: new Date().toISOString()}));
+        let html = '';
+        if (val1) html += `<li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> ${val1}</li>`;
+        if (val2) html += `<li class="flex items-center gap-2"><i class="fas fa-check text-emerald-600"></i> ${val2}</li>`;
+        document.getElementById('commitmentsList').innerHTML = html;
+        progress = 3;
+        document.getElementById('progressFill').style.width = '100%';
+        alert('✅ Family journal saved on your device. May God guard your legacy!');
+      }
+    }
+
+    function shareExperience() {
+      const text = "Today I meditated on 'Family Legacy: The Protected Seed Experience' (2 Kings 11-12). God protects my family. #DevotionalNataliaZarta";
+      navigator.clipboard.writeText(text).then(() => alert('📋 Text copied! Ready to share on social media.'));
+    }
+
+    window.onload = initTailwind;
+  </script>
+</body>
+</html>
