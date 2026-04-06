@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Plan Inglés A1→B2 (3 Meses)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-overview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            background: #fff;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .phase-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        
+        .phase-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .phase-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .daily-tracker {
+            margin-bottom: 25px;
+        }
+        
+        .day-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .day-title {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 16px;
+        }
+        
+        .day-date {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .activity {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .activity input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        
+        .activity-label {
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        .activity-time {
+            color: #999;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .notes-section {
+            margin-top: 15px;
+        }
+        
+        .notes-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .notes-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .weekly-goal {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .goal-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        
+        .goal-text {
+            font-size: 14px;
+            color: #856404;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 1000;
+        }
+        
+        .celebration.show {
+            display: block;
+            animation: popIn 0.3s ease;
+        }
+        
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        
+        .overlay.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Mi Plan Inglés A1→B2</h1>
+            <p style="color: #666; font-size: 14px;">3 Meses · Speaking & Listening</p>
+        </header>
+        
+        <div class="progress-overview">
+            <div class="stat-row">
+                <span>Días completados:</span>
+                <span class="stat-value"><span id="daysCompleted">0</span>/65</span>
+            </div>
+            <div class="stat-row">
+                <span>Horas totales:</span>
+                <span class="stat-value"><span id="totalHours">0</span>/130h</span>
+            </div>
+            <div class="stat-row">
+                <span>Nivel estimado:</span>
+                <span class="stat-value" id="currentLevel">A1</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+        
+        <div class="phase-selector">
+            <button class="phase-btn active" data-phase="1">Fase 1<br>A1→A2</button>
+            <button class="phase-btn" data-phase="2">Fase 2<br>A2→B1</button>
+            <button class="phase-btn" data-phase="3">Fase 3<br>B1→B2</button>
+        </div>
+        
+        <div class="weekly-goal" id="weeklyGoal">
+            <div class="goal-title">🎯 Meta Semanal - Fase 1</div>
+            <div class="goal-text">Dominar 100 palabras básicas + pronunciación clara de vocales</div>
+        </div>
+        
+        <div class="daily-tracker" id="dailyTracker">
+            <!-- Se genera dinámicamente -->
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="saveProgress()">💾 Guardar</button>
+            <button class="btn btn-secondary" onclick="resetWeek()">🔄 Resetear Semana</button>
+        </div>
+        
+        <div class="footer">
+            Creado por Claude · Actualizado automáticamente
+        </div>
+    </div>
+    
+    <div class="overlay" id="overlay"></div>
+    <div class="celebration" id="celebration">
+        <h2 style="color: #667eea; margin-bottom: 15px;">🎉 ¡Día Completado!</h2>
+        <p style="color: #666; margin-bottom: 20px;">Excelente trabajo, Natalia. Sigue así.</p>
+        <button class="btn btn-primary" onclick="closeCelebration()">Continuar</button>
+    </div>
+    
+    <script>
+        // Configuración de fases
+        const phases = {
+            1: {
+                name: 'Fase 1: Fundamentos (A1→A2)',
+                weeks: 4,
+                goal: 'Dominar 100 palabras básicas + pronunciación clara de vocales',
+                activities: [
+                    { name: 'Open English clase', time: '30min', type: 'speaking' },
+                    { name: 'Duolingo practice', time: '30min', type: 'grammar' },
+                    { name: 'YouTube pronunciación', time: '30min', type: 'listening' },
+                    { name: 'Shadowing canciones', time: '30min', type: 'speaking' },
+                    { name: 'Leer en voz alta letras', time: '15min', type: 'reading' },
+                    { name: 'Diario en inglés', time: '5min', type: 'writing' },
+                    { name: 'Grabación respuestas', time: '10min', type: 'speaking' }
+                ]
+            },
+            2: {
+                name: 'Fase 2: Activación (A2→B1)',
+                weeks: 4,
+                goal: 'Mantener conversaciones de 5+ minutos sin traducir mentalmente',
+                activities: [
+                    { name: 'Open English avanzado', time: '45min', type: 'speaking' },
+                    { name: 'Podcast BBC 6min', time: '30min', type: 'listening' },
+                    { name: 'HelloTalk conversación', time: '30min', type: 'speaking' },
+                    { name: 'Resumen del día', time: '15min', type: 'writing' },
+                    { name: 'Leer artículos en voz alta', time: '15min', type: 'reading' },
+                    { name: 'Email a partner', time: '15min', type: 'writing' }
+                ]
+            },
+            3: {
+                name: 'Fase 3: Fluidez (B1→B2)',
+                weeks: 5,
+                goal: 'Hablar fluido sobre temas complejos + entender nativos sin esfuerzo',
+                activities: [
+                    { name: 'Open English nivel alto', time: '30min', type: 'speaking' },
+                    { name: 'TED Talks análisis', time: '30min', type: 'listening' },
+                    { name: 'Italki conversación', time: '45min', type: 'speaking' },
+                    { name: 'Writing reflexivo', time: '15min', type: 'writing' },
+                    { name: 'Leer libro capítulo', time: '20min', type: 'reading' },
+                    { name: 'Crear video explicación', time: '10min', type: 'speaking' }
+                ]
+            }
+        };
+        
+        let currentPhase = 1;
+        let currentWeek = 1;
+        let progressData = {};
+        
+        // Inicializar
+        function init() {
+            loadProgress();
+            renderDailyTracker();
+            updateStats();
+            setupPhaseButtons();
+        }
+        
+        // Configurar botones de fase
+        function setupPhaseButtons() {
+            document.querySelectorAll('.phase-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentPhase = parseInt(btn.dataset.phase);
+                    document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderDailyTracker();
+                    updateWeeklyGoal();
+                });
+            });
+        }
+        
+        // Renderizar tracker diario
+        function renderDailyTracker() {
+            const tracker = document.getElementById('dailyTracker');
+            const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+            const phase = phases[currentPhase];
+            
+            tracker.innerHTML = '';
+            
+            days.forEach((day, index) => {
+                const dayKey = `phase${currentPhase}_week${currentWeek}_day${index}`;
+                const dayData = progressData[dayKey] || { completed: [], notes: '' };
+                
+                const card = document.createElement('div');
+                card.className = 'day-card';
+                
+                let activitiesHTML = '';
+                phase.activities.forEach((activity, actIndex) => {
+                    const isChecked = dayData.completed.includes(actIndex) ? 'checked' : '';
+                    activitiesHTML += `
+                        <div class="activity">
+                            <input type="checkbox" 
+                                   id="${dayKey}_${actIndex}" 
+                                   ${isChecked}
+                                   onchange="toggleActivity('${dayKey}', ${actIndex})">
+                            <label class="activity-label" for="${dayKey}_${actIndex}">
+                                ${activity.name}
+                            </label>
+                            <span class="activity-time">${activity.time}</span>
+                        </div>
+                    `;
+                });
+                
+                card.innerHTML = `
+                    <div class="day-header">
+                        <span class="day-title">${day}</span>
+                        <span class="day-date" id="completion_${dayKey}">0/7</span>
+                    </div>
+                    ${activitiesHTML}
+                    <div class="notes-section">
+                        <textarea class="notes-textarea" 
+                                  placeholder="📝 Notas del día (qué aprendiste, dificultades...)"
+                                  onchange="saveNotes('${dayKey}', this.value)">${dayData.notes}</textarea>
+                    </div>
+                `;
+                
+                tracker.appendChild(card);
+                updateDayCompletion(dayKey);
+            });
+        }
+        
+        // Toggle activity
+        function toggleActivity(dayKey, actIndex) {
+            if (!progressData[dayKey]) {
+                progressData[dayKey] = { completed: [], notes: '' };
+            }
+            
+            const index = progressData[dayKey].completed.indexOf(actIndex);
+            if (index > -1) {
+                progressData[dayKey].completed.splice(index, 1);
+            } else {
+                progressData[dayKey].completed.push(actIndex);
+            }
+            
+            updateDayCompletion(dayKey);
+            updateStats();
+            saveProgress();
+            
+            // Celebración si completa el día
+            const phase = phases[currentPhase];
+            if (progressData[dayKey].completed.length === phase.activities.length) {
+                showCelebration();
+            }
+        }
+        
+        // Actualizar completitud del día
+        function updateDayCompletion(dayKey) {
+            const dayData = progressData[dayKey] || { completed: [] };
+            const phase = phases[currentPhase];
+            const total = phase.activities.length;
+            const completed = dayData.completed.length;
+            
+            const element = document.getElementById(`completion_${dayKey}`);
+            if (element) {
+                element.textContent = `${completed}/${total}`;
+                element.style.color = completed === total ? '#10b981' : '#666';
+                element.style.fontWeight = completed === total ? 'bold' : 'normal';
+            }
+        }
+        
+        // Guardar notas
+        function saveNotes(dayKey, notes) {
+            if (!progressData[dayKey]) {
+                progressData[dayKey] = { completed: [], notes: '' };
+            }
+            progressData[dayKey].notes = notes;
+            saveProgress();
+        }
+        
+        // Actualizar estadísticas
+        function updateStats() {
+            let totalDaysCompleted = 0;
+            let totalHours = 0;
+            
+            Object.keys(progressData).forEach(key => {
+                const dayData = progressData[key];
+                const phaseNum = parseInt(key.match(/phase(\d+)/)[1]);
+                const phase = phases[phaseNum];
+                
+                if (dayData.completed.length === phase.activities.length) {
+                    totalDaysCompleted++;
+                    totalHours += 2;
+                }
+            });
+            
+            document.getElementById('daysCompleted').textContent = totalDaysCompleted;
+            document.getElementById('totalHours').textContent = totalHours;
+            
+            const progressPercent = (totalDaysCompleted / 65) * 100;
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+            
+            // Calcular nivel estimado
+            let level = 'A1';
+            if (totalHours >= 100) level = 'B1-B2';
+            else if (totalHours >= 60) level = 'A2-B1';
+            else if (totalHours >= 30) level = 'A2';
+            
+            document.getElementById('currentLevel').textContent = level;
+        }
+        
+        // Actualizar meta semanal
+        function updateWeeklyGoal() {
+            const phase = phases[currentPhase];
+            const goalDiv = document.getElementById('weeklyGoal');
+            goalDiv.querySelector('.goal-title').textContent = `🎯 Meta - Fase ${currentPhase}`;
+            goalDiv.querySelector('.goal-text').textContent = phase.goal;
+        }
+        
+        // Guardar progreso
+        function saveProgress() {
+            localStorage.setItem('englishProgress', JSON.stringify(progressData));
+            localStorage.setItem('currentPhase', currentPhase);
+            localStorage.setItem('currentWeek', currentWeek);
+            
+            // Feedback visual
+            const btn = event?.target;
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Guardado';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 1500);
+            }
+        }
+        
+        // Cargar progreso
+        function loadProgress() {
+            const saved = localStorage.getItem('englishProgress');
+            if (saved) {
+                progressData = JSON.parse(saved);
+            }
+            
+            const savedPhase = localStorage.getItem('currentPhase');
+            if (savedPhase) {
+                currentPhase = parseInt(savedPhase);
+            }
+            
+            const savedWeek = localStorage.getItem('currentWeek');
+            if (savedWeek) {
+                currentWeek = parseInt(savedWeek);
+            }
+        }
+        
+        // Resetear semana
+        function resetWeek() {
+            if (confirm('¿Segura que quieres resetear esta semana? Se perderá el progreso.')) {
+                for (let i = 0; i < 5; i++) {
+                    const dayKey = `phase${currentPhase}_week${currentWeek}_day${i}`;
+                    delete progressData[dayKey];
+                }
+                saveProgress();
+                renderDailyTracker();
+                updateStats();
+            }
+        }
+        
+        // Mostrar celebración
+        function showCelebration() {
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('celebration').classList.add('show');
+        }
+        
+        // Cerrar celebración
+        function closeCelebration() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('celebration').classList.remove('show');
+        }
+        
+        // Inicializar al cargar
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
