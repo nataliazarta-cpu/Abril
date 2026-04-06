@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fundamentos del Reino: El Legado de Eliseo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Cormorant+Garamond:wght@500&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2 { font-family: 'Cormorant Garamond', serif; }
+    .glass { background: rgba(245,240,230,0.85); backdrop-filter: blur(16px); }
+    .olive { filter: drop-shadow(0 10px 15px rgba(180,140,60,0.3)); }
+  </style>
+</head>
+<body class="bg-[#F5F0E6] text-[#2C2C2C]">
+  <div class="max-w-4xl mx-auto p-6">
+    <!-- HERO con nueva ilustración botánica -->
+    <div class="text-center py-12">
+      <div class="mx-auto w-24 h-24 flex items-center justify-center mb-6">
+        <i class="fas fa-olive-branch text-7xl text-[#B48C3C] olive"></i>
+      </div>
+      <h1 class="text-5xl font-light text-[#2C2C2C] mb-2">Fundamentos del Reino</h1>
+      <p class="text-3xl text-[#B48C3C] tracking-widest">El Legado de Eliseo</p>
+      <p class="mt-6 max-w-md mx-auto text-lg text-[#5D5D5D]">Construye sobre el Pacto que nunca falla.</p>
+      <button onclick="startWizard()" class="mt-8 px-10 py-4 bg-[#B48C3C] hover:bg-[#9C7630] text-white rounded-3xl font-medium flex items-center gap-3 mx-auto transition-all">
+        <i class="fas fa-seedling"></i> COMENZAR EL RECORRIDO
+      </button>
+    </div>
+
+    <!-- WIZARD PASO A PASO (nueva navegación) -->
+    <div id="wizardSection" class="hidden mt-10">
+      <div class="flex justify-between items-center mb-8">
+        <button onclick="prevStep()" class="text-[#B48C3C] flex items-center gap-2"><i class="fas fa-chevron-left"></i> Anterior</button>
+        <div class="text-sm font-medium text-[#B48C3C]" id="stepCounter">Paso <span id="currentStep">1</span> de 3</div>
+        <button onclick="nextStep()" class="text-[#B48C3C] flex items-center gap-2">Siguiente <i class="fas fa-chevron-right"></i></button>
+      </div>
+
+      <!-- Paso 1 -->
+      <div id="step1" class="wizard-step">
+        <div class="glass p-8 rounded-3xl text-center">
+          <h3 class="text-2xl mb-4">1. Ora como Joacaz</h3>
+          <textarea id="prayInput" placeholder="Escribe tu oración de hoy por tu ministerio..." class="w-full h-40 p-6 rounded-2xl border border-[#B48C3C]/30 focus:border-[#B48C3C]"></textarea>
+        </div>
+      </div>
+
+      <!-- Paso 2 -->
+      <div id="step2" class="wizard-step hidden">
+        <div class="glass p-8 rounded-3xl text-center">
+          <h3 class="text-2xl mb-4">2. Confía en la Palabra</h3>
+          <input id="promiseInput" type="text" placeholder="Una promesa de Dios que hoy te cuesta creer" class="w-full p-6 rounded-2xl border border-[#B48C3C]/30 focus:border-[#B48C3C]">
+          <div class="mt-6 text-xs text-[#B48C3C]">13:19 — Dios honra la fe aunque parezca imposible</div>
+        </div>
+      </div>
+
+      <!-- Paso 3 -->
+      <div id="step3" class="wizard-step hidden">
+        <div class="glass p-8 rounded-3xl text-center">
+          <h3 class="text-2xl mb-4">3. Deja un legado vivo</h3>
+          <p class="text-[#5D5D5D]">¿A quién compartirás hoy una verdad de 2 Reyes 13-14?</p>
+          <input id="legacyInput" type="text" placeholder="Nombre o mensaje..." class="w-full mt-6 p-6 rounded-2xl border border-[#B48C3C]/30 focus:border-[#B48C3C]">
+        </div>
+      </div>
+
+      <button onclick="saveJournal()" class="mt-12 w-full py-5 bg-[#2C2C2C] text-white rounded-3xl hover:bg-black">GUARDAR MI DIARIO DE PACTO</button>
+    </div>
+
+    <!-- PROGRESO LINEAL -->
+    <div class="mt-8 flex gap-2 justify-center">
+      <div onclick="goToStep(1)" class="cursor-pointer w-3 h-3 rounded-full bg-[#B48C3C]" id="dot1"></div>
+      <div onclick="goToStep(2)" class="cursor-pointer w-3 h-3 rounded-full bg-[#E5E0D5]" id="dot2"></div>
+      <div onclick="goToStep(3)" class="cursor-pointer w-3 h-3 rounded-full bg-[#E5E0D5]" id="dot3"></div>
+    </div>
+
+    <!-- COMPROMISOS Y PROMESA -->
+    <div class="mt-12 grid grid-cols-2 gap-6 text-sm">
+      <div class="bg-white p-6 rounded-3xl border border-[#B48C3C]/20">
+        <strong class="text-[#B48C3C]">Tus compromisos hoy</strong>
+        <ul id="commitmentsList" class="mt-4 space-y-2 text-xs"></ul>
+      </div>
+      <div class="bg-white p-6 rounded-3xl border border-[#B48C3C]/20">
+        <strong class="text-[#B48C3C]">Promesa de Dios</strong>
+        <p class="text-xs mt-4">"Por causa de su pacto con Abraham, Isaac y Jacob… no quiso destruirlos" (13:23)</p>
+      </div>
+    </div>
+
+    <button onclick="shareExperience()" class="mt-12 mx-auto flex items-center gap-3 text-[#B48C3C] hover:text-[#9C7630]">
+      <i class="fas fa-share-alt"></i> COMPARTIR EN REDES
+    </button>
+
+    <div class="mt-16 text-center">
+      <p class="italic text-[#5D5D5D] max-w-xs mx-auto">"Señor, que mi ministerio descanse en Tu pacto eterno. Amén."</p>
+      <p class="text-xs mt-8 text-[#B48C3C]">Por: Natalia Zarta</p>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+    function initTailwind() {
+      tailwind.config = { theme: { extend: { colors: { gold: '#B48C3C', nude: '#F5F0E6' } } } };
+    }
+    function startWizard() {
+      document.getElementById('wizardSection').classList.remove('hidden');
+      showStep(1);
+    }
+    function showStep(n) {
+      currentStep = n;
+      document.querySelectorAll('.wizard-step').forEach(s => s.classList.add('hidden'));
+      document.getElementById('step' + n).classList.remove('hidden');
+      document.getElementById('currentStep').textContent = n;
+      document.querySelectorAll('#dot1, #dot2, #dot3').forEach((dot, i) => {
+        dot.style.backgroundColor = (i + 1 === n) ? '#B48C3C' : '#E5E0D5';
+      });
+    }
+    function nextStep() { if (currentStep < 3) showStep(currentStep + 1); }
+    function prevStep() { if (currentStep > 1) showStep(currentStep - 1); }
+    function goToStep(n) { showStep(n); }
+    function saveJournal() {
+      const p1 = document.getElementById('prayInput').value.trim();
+      const p2 = document.getElementById('promiseInput').value.trim();
+      const p3 = document.getElementById('legacyInput').value.trim();
+      localStorage.setItem('elishaCovenantJournal', JSON.stringify({pray: p1, promise: p2, legacy: p3, date: new Date().toISOString()}));
+      let html = '';
+      if (p1) html += `<li class="flex gap-2"><i class="fas fa-check text-[#B48C3C]"></i> Oración guardada</li>`;
+      if (p2) html += `<li class="flex gap-2"><i class="fas fa-check text-[#B48C3C]"></i> Promesa escrita</li>`;
+      if (p3) html += `<li class="flex gap-2"><i class="fas fa-check text-[#B48C3C]"></i> Legado compartido</li>`;
+      document.getElementById('commitmentsList').innerHTML = html;
+      alert('✅ Tu diario de pacto ha sido guardado en tu dispositivo.');
+    }
+    function shareExperience() {
+      const text = "Hoy caminé por 'Fundamentos del Reino: El Legado de Eliseo' (2 Reyes 13-14). Mi ministerio descansa en el Pacto de Dios. #DevocionalNataliaZarta";
+      navigator.clipboard.writeText(text).then(() => alert('📋 Texto copiado para redes!'));
+    }
+    window.onload = initTailwind;
+  </script>
+</body>
+</html>

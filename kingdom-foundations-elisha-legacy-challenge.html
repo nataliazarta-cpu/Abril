@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kingdom Foundations: The Elisha Legacy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Cormorant+Garamond:wght@500&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2 { font-family: 'Cormorant Garamond', serif; }
+    .glass { background: rgba(245,240,230,0.85); backdrop-filter: blur(16px); }
+    .olive { filter: drop-shadow(0 10px 15px rgba(180,140,60,0.3)); }
+  </style>
+</head>
+<body class="bg-[#F5F0E6] text-[#2C2C2C]">
+  <div class="max-w-4xl mx-auto p-6">
+    <!-- HERO -->
+    <div class="text-center py-12">
+      <div class="mx-auto w-24 h-24 flex items-center justify-center mb-6">
+        <i class="fas fa-olive-branch text-7xl text-[#B48C3C] olive"></i>
+      </div>
+      <h1 class="text-5xl font-light text-[#2C2C2C] mb-2">Kingdom Foundations</h1>
+      <p class="text-3xl text-[#B48C3C] tracking-widest">The Elisha Legacy</p>
+      <p class="mt-6 max-w-md mx-auto text-lg text-[#5D5D5D]">Build on the Covenant that never fails.</p>
+      <button onclick="startWizard()" class="mt-8 px-10 py-4 bg-[#B48C3C] hover:bg-[#9C7630] text-white rounded-3xl font-medium flex items-center gap-3 mx-auto transition-all">
+        <i class="fas fa-seedling"></i> START THE JOURNEY
+      </button>
+    </div>
+
+    <!-- WIZARD PASO A PASO -->
+    <div id="wizardSection" class="hidden mt-10">
+      <div class="flex justify-between items-center mb-8">
+        <button onclick="prevStep()" class="text-[#B48C3C] flex items-center gap-2"><i class="fas fa-chevron-left"></i> Previous</button>
+        <div class="text-sm font-medium text-[#B48C3C]" id="stepCounter">Step <span id="currentStep">1</span> of 3</div>
+        <button onclick="nextStep()" class="text-[#B48C3C] flex items-center gap-2">Next <i class="fas fa-chevron-right"></i></button>
+      </div>
+
+      <!-- Step 1 -->
+      <div id="step1" class="wizard-step">
+        <div class="glass p-8 rounded-3xl text-center">
+          <h3 class="text-2xl mb-4">1. Pray like Jehoahaz</h3>
+          <textarea id="prayInput" placeholder="Write your prayer today for your ministry..." class="w-full h-40 p-6 rounded-2xl border border-[#B48C3C]/30 focus:border-[#B48C3C]"></textarea>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="step2" class="wizard-step hidden">
+        <div class="glass p-8 rounded-3xl text-center">
+          <h3 class="text-2xl mb-4">2. Trust the Word</h3>
+          <input id="promiseInput" type="text" placeholder="One promise of God you are struggling to believe today" class="w-full p-6 rounded-2xl border border-[#B48C3C]/30 focus:border-[#B48C3C]">
+          <div class="mt-6 text-xs text-[#B48C3C]">13:19 — God honors faith even when it seems impossible</div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="step3" class="wizard-step hidden">
+        <div class="glass p-8 rounded-3xl text-center">
+          <h3 class="text-2xl mb-4">3. Leave a living legacy</h3>
+          <p class="text-[#5D5D5D]">Who will you share one truth from 2 Kings 13-14 with today?</p>
+          <input id="legacyInput" type="text" placeholder="Name or message..." class="w-full mt-6 p-6 rounded-2xl border border-[#B48C3C]/30 focus:border-[#B48C3C]">
+        </div>
+      </div>
+
+      <button onclick="saveJournal()" class="mt-12 w-full py-5 bg-[#2C2C2C] text-white rounded-3xl hover:bg-black">SAVE MY COVENANT JOURNAL</button>
+    </div>
+
+    <!-- PROGRESO LINEAL -->
+    <div class="mt-8 flex gap-2 justify-center">
+      <div onclick="goToStep(1)" class="cursor-pointer w-3 h-3 rounded-full bg-[#B48C3C]" id="dot1"></div>
+      <div onclick="goToStep(2)" class="cursor-pointer w-3 h-3 rounded-full bg-[#E5E0D5]" id="dot2"></div>
+      <div onclick="goToStep(3)" class="cursor-pointer w-3 h-3 rounded-full bg-[#E5E0D5]" id="dot3"></div>
+    </div>
+
+    <!-- COMPROMISOS Y PROMESA -->
+    <div class="mt-12 grid grid-cols-2 gap-6 text-sm">
+      <div class="bg-white p-6 rounded-3xl border border-[#B48C3C]/20">
+        <strong class="text-[#B48C3C]">Your commitments today</strong>
+        <ul id="commitmentsList" class="mt-4 space-y-2 text-xs"></ul>
+      </div>
+      <div class="bg-white p-6 rounded-3xl border border-[#B48C3C]/20">
+        <strong class="text-[#B48C3C]">God’s Promise</strong>
+        <p class="text-xs mt-4">"Because of His covenant with Abraham, Isaac and Jacob… He would not destroy them" (13:23)</p>
+      </div>
+    </div>
+
+    <button onclick="shareExperience()" class="mt-12 mx-auto flex items-center gap-3 text-[#B48C3C] hover:text-[#9C7630]">
+      <i class="fas fa-share-alt"></i> SHARE ON SOCIAL MEDIA
+    </button>
+
+    <div class="mt-16 text-center">
+      <p class="italic text-[#5D5D5D] max-w-xs mx-auto">"Lord, may my ministry rest on Your eternal covenant. Amen."</p>
+      <p class="text-xs mt-8 text-[#B48C3C]">By: Natalia Zarta</p>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+    function initTailwind() {
+      tailwind.config = { theme: { extend: { colors: { gold: '#B48C3C', nude: '#F5F0E6' } } } };
+    }
+    function startWizard() {
+      document.getElementById('wizardSection').classList.remove('hidden');
+      showStep(1);
+    }
+    function showStep(n) {
+      currentStep = n;
+      document.querySelectorAll('.wizard-step').forEach(s => s.classList.add('hidden'));
+      document.getElementById('step' + n).classList.remove('hidden');
+      document.getElementById('currentStep').textContent = n;
+      document.querySelectorAll('#dot1, #dot2, #dot3').forEach((dot, i) => {
+        dot.style.backgroundColor = (i + 1 === n) ? '#B48C3C' : '#E5E0D5';
+      });
+    }
+    function nextStep() { if (currentStep < 3) showStep(currentStep + 1); }
+    function prevStep() { if (currentStep > 1) showStep(currentStep - 1); }
+    function goToStep(n) { showStep(n); }
+    function saveJournal() {
+      const p1 = document.getElementById('prayInput').value.trim();
+      const p2 = document.getElementById('promiseInput').value.trim();
+      const p3 = document.getElementById('legacyInput').value.trim();
+      localStorage.setItem('elishaCovenantJournal', JSON.stringify({pray: p1, promise: p2, legacy: p3, date: new Date().toISOString()}));
+      let html = '';
+      if (p1) html += `<li class="flex gap-2"><i class="fas fa-check text-[#B48C3C]"></i> Prayer saved</li>`;
+      if (p2) html += `<li class="flex gap-2"><i class="fas fa-check text-[#B48C3C]"></i> Promise written</li>`;
+      if (p3) html += `<li class="flex gap-2"><i class="fas fa-check text-[#B48C3C]"></i> Legacy shared</li>`;
+      document.getElementById('commitmentsList').innerHTML = html;
+      alert('✅ Your covenant journal has been saved on your device.');
+    }
+    function shareExperience() {
+      const text = "Today I walked through 'Kingdom Foundations: The Elisha Legacy' (2 Kings 13-14). My ministry rests on God’s Covenant. #DevotionalNataliaZarta";
+      navigator.clipboard.writeText(text).then(() => alert('📋 Text copied for social media!'));
+    }
+    window.onload = initTailwind;
+  </script>
+</body>
+</html>
