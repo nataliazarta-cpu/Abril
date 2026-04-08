@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Maturity: The Growth Journal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Cormorant+Garamond:wght@500&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2 { font-family: 'Cormorant Garamond', serif; }
+    .glass { background: rgba(245,240,230,0.85); backdrop-filter: blur(16px); }
+  </style>
+</head>
+<body class="bg-[#F5F0E6] text-[#2C2C2C]">
+  <div class="max-w-4xl mx-auto p-6">
+    <div class="text-center py-12">
+      <div class="mx-auto w-24 h-24 flex items-center justify-center mb-6">
+        <i class="fas fa-vine text-7xl text-[#8A9A7B]"></i>
+      </div>
+      <h1 class="text-5xl font-light text-[#2C2C2C] mb-2">Personal Maturity</h1>
+      <p class="text-3xl text-[#8A9A7B] tracking-widest">The Growth Journal</p>
+      <p class="mt-6 max-w-md mx-auto text-lg text-[#5D5D5D]">Remove your high places and grow in obedience.</p>
+      <button onclick="startJournal()" class="mt-8 px-10 py-4 bg-[#8A9A7B] hover:bg-[#6F7F62] text-white rounded-3xl font-medium flex items-center gap-3 mx-auto transition-all">
+        <i class="fas fa-book"></i> OPEN MY JOURNAL
+      </button>
+    </div>
+
+    <div id="journalSection" class="hidden mt-10">
+      <div class="space-y-8">
+        <div class="relative border-l-2 border-[#8A9A7B] pl-8">
+          <div class="absolute -left-2 top-6 w-4 h-4 bg-[#8A9A7B] rounded-full"></div>
+          <div class="glass p-6 rounded-3xl">
+            <h3 class="text-xl mb-2">1. What high place do I see in myself today?</h3>
+            <textarea id="highplaceInput" placeholder="Be honest..." class="w-full h-32 p-5 rounded-2xl border border-[#8A9A7B]/30"></textarea>
+          </div>
+        </div>
+        <div class="relative border-l-2 border-[#8A9A7B] pl-8">
+          <div class="absolute -left-2 top-6 w-4 h-4 bg-[#8A9A7B] rounded-full"></div>
+          <div class="glass p-6 rounded-3xl">
+            <h3 class="text-xl mb-2">2. What rightness am I choosing today?</h3>
+            <input id="rectitudeInput" type="text" placeholder="One concrete obedience decision" class="w-full p-5 rounded-2xl border border-[#8A9A7B]/30">
+          </div>
+        </div>
+        <div class="relative border-l-2 border-[#8A9A7B] pl-8">
+          <div class="absolute -left-2 top-6 w-4 h-4 bg-[#8A9A7B] rounded-full"></div>
+          <div class="glass p-6 rounded-3xl">
+            <h3 class="text-xl mb-2">3. How am I growing in Christ?</h3>
+            <textarea id="growthInput" placeholder="One truth that makes me more mature today" class="w-full h-32 p-5 rounded-2xl border border-[#8A9A7B]/30"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="saveJournal()" class="mt-12 w-full py-5 bg-[#2C2C2C] text-white rounded-3xl hover:bg-black">SAVE TO MY PERSONAL JOURNAL</button>
+    </div>
+
+    <div class="mt-12 grid grid-cols-2 gap-6 text-sm">
+      <div class="bg-white p-6 rounded-3xl border border-[#8A9A7B]/20">
+        <strong class="text-[#8A9A7B]">Your maturity commitments</strong>
+        <ul id="commitmentsList" class="mt-4 space-y-2 text-xs"></ul>
+      </div>
+      <div class="bg-white p-6 rounded-3xl border border-[#8A9A7B]/20">
+        <strong class="text-[#8A9A7B]">God’s Promise</strong>
+        <p class="text-xs mt-4">"He did what was right in the eyes of the LORD" (15:3) – You can too.</p>
+      </div>
+    </div>
+
+    <button onclick="shareExperience()" class="mt-12 mx-auto flex items-center gap-3 text-[#8A9A7B]">Share on social media <i class="fas fa-share-alt"></i></button>
+
+    <div class="mt-16 text-center">
+      <p class="italic text-[#5D5D5D]">"Lord, may my life grow in complete obedience. Amen."</p>
+      <p class="text-xs mt-8 text-[#8A9A7B]">By: Natalia Zarta</p>
+    </div>
+  </div>
+
+  <script>
+    function initTailwind() {
+      tailwind.config = { theme: { extend: { colors: { sage: '#8A9A7B' } } } };
+    }
+    function startJournal() {
+      document.getElementById('journalSection').classList.remove('hidden');
+      document.getElementById('journalSection').scrollIntoView({ behavior: 'smooth' });
+    }
+    function saveJournal() {
+      const hp = document.getElementById('highplaceInput').value.trim();
+      const rect = document.getElementById('rectitudeInput').value.trim();
+      const grow = document.getElementById('growthInput').value.trim();
+      localStorage.setItem('maturityJournal2026', JSON.stringify({highplace: hp, rectitude: rect, growth: grow, date: new Date().toISOString()}));
+      let html = '';
+      if (hp) html += `<li class="flex gap-2"><i class="fas fa-check text-[#8A9A7B]"></i> High place identified</li>`;
+      if (rect) html += `<li class="flex gap-2"><i class="fas fa-check text-[#8A9A7B]"></i> Rightness chosen</li>`;
+      if (grow) html += `<li class="flex gap-2"><i class="fas fa-check text-[#8A9A7B]"></i> Growth in Christ</li>`;
+      document.getElementById('commitmentsList').innerHTML = html;
+      alert('✅ Your maturity journal has been saved.');
+    }
+    function shareExperience() {
+      const text = "Today I wrote in my 'Personal Maturity Journal' (2 Kings 15-16). I'm removing my high places. #DevotionalNataliaZarta";
+      navigator.clipboard.writeText(text).then(() => alert('📋 Copied for social media!'));
+    }
+    window.onload = initTailwind;
+  </script>
+</body>
+</html>
