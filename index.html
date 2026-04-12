@@ -1,111 +1,199 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Rutina Disciplina Extrema</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disciplina Extrema PRO</title>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0b0f14;
+  color:white;
+}
 
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: black;
-      color: white;
-    }
-  </style>
+.container{
+  max-width:500px;
+  margin:auto;
+  padding:15px;
+}
+
+h1{
+  text-align:center;
+}
+
+.card{
+  background:#121821;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:12px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  border:none;
+  border-radius:10px;
+  background:#00c853;
+  color:white;
+  font-weight:bold;
+}
+
+.timer{
+  font-size:30px;
+  text-align:center;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:5px;
+}
+
+.day{
+  height:30px;
+  background:#1c2530;
+  border-radius:5px;
+}
+
+.done{
+  background:#00c853;
+}
+
+.fail{
+  background:red;
+}
+
+img{
+  width:100%;
+  border-radius:10px;
+}
+</style>
 </head>
 
-<body class="flex flex-col items-center p-4">
+<body>
 
-  <h1 class="text-2xl font-bold mb-2 text-center">
-    🔥 MODO DISCIPLINA EXTREMA
-  </h1>
+<div class="container">
 
-  <p class="text-red-500 text-sm mb-4 text-center">
-    SIN EXCUSAS. SIN NEGOCIAR. SOLO RESULTADOS.
-  </p>
+<h1>🔥 DISCIPLINA EXTREMA PRO</h1>
 
-  <!-- PROGRESO -->
-  <div class="w-full max-w-md mb-4">
-    <div class="bg-gray-800 rounded-full h-4 overflow-hidden">
-      <div id="progressBar" class="bg-green-500 h-4 w-0 transition-all"></div>
-    </div>
-    <p class="text-center text-sm mt-2" id="progressText">0%</p>
-  </div>
+<div class="card">
+<h3 id="dayTitle"></h3>
+<p id="weekInfo"></p>
 
-  <!-- EJERCICIOS -->
-  <div id="exerciseList" class="w-full max-w-md space-y-3"></div>
+<img id="exerciseImg" src="">
 
-  <!-- BOTÓN RESET -->
-  <button onclick="resetDay()" class="mt-6 bg-red-600 px-4 py-2 rounded-xl">
-    Reiniciar día
-  </button>
+<div class="timer" id="timer">30</div>
+
+<button onclick="startTimer()">INICIAR</button>
+<button onclick="completeDay()">COMPLETAR</button>
+<button onclick="failDay()">FALLÉ</button>
+
+</div>
+
+<div class="card">
+<h3>📊 Progreso</h3>
+<div class="grid" id="tracker"></div>
+</div>
+
+<div class="card">
+<h3>⚠️ Regla</h3>
+<p>Si fallas → reinicias semana</p>
+</div>
+
+</div>
 
 <script>
+
+// CONFIG BASE
 const exercises = [
-  { name: "Sentadillas", reps: 20 },
-  { name: "Flexiones", reps: 15 },
-  { name: "Abdominales", reps: 25 },
-  { name: "Plancha", reps: "30 seg" },
-  { name: "Burpees", reps: 10 }
+  {name:"Sentadillas", img:"https://images.unsplash.com/photo-1599058917212-d750089bc07e"},
+  {name:"Plancha", img:"https://images.unsplash.com/photo-1583454110551-21f2fa2afe61"},
+  {name:"Zancadas", img:"https://images.unsplash.com/photo-1594737625785-a6cbdabd333c"},
+  {name:"Push ups", img:"https://images.unsplash.com/photo-1598970434795-0c54fe7c0642"}
 ];
 
-let progress = JSON.parse(localStorage.getItem("progress")) || [];
+let baseReps = 10;
 
-function render() {
-  const container = document.getElementById("exerciseList");
-  container.innerHTML = "";
+// FECHA AUTOMÁTICA
+const startDate = new Date("2026-04-01");
+const today = new Date();
+const diffDays = Math.floor((today - startDate)/(1000*60*60*24));
 
-  exercises.forEach((ex, i) => {
-    const done = progress.includes(i);
+let week = Math.floor(diffDays/7)+1;
+let day = (diffDays%7)+1;
 
-    const div = document.createElement("div");
-    div.className = `p-4 rounded-xl flex justify-between items-center ${
-      done ? "bg-green-700" : "bg-gray-800"
-    }`;
+// PROGRESIÓN REAL
+let reps = baseReps + (week*2);
 
-    div.innerHTML = `
-      <div>
-        <p class="font-bold">${ex.name}</p>
-        <p class="text-sm">${ex.reps}</p>
-      </div>
-      <button onclick="toggle(${i})" class="bg-black px-3 py-1 rounded">
-        ${done ? "✔" : "OK"}
-      </button>
-    `;
+// UI
+document.getElementById("dayTitle").innerText = "Día " + day;
+document.getElementById("weekInfo").innerText = "Semana " + week + " | Reps: " + reps;
 
-    container.appendChild(div);
-  });
+const exercise = exercises[(day-1)%exercises.length];
+document.getElementById("exerciseImg").src = exercise.img;
 
-  updateProgress();
+// TIMER
+let time = 30;
+let interval;
+
+function startTimer(){
+  clearInterval(interval);
+  interval = setInterval(()=>{
+    time--;
+    document.getElementById("timer").innerText = time;
+    if(time<=0){
+      clearInterval(interval);
+      alert("Sigue sin excusas");
+      time = 30;
+    }
+  },1000);
 }
 
-function toggle(i) {
-  if (progress.includes(i)) {
-    progress = progress.filter(x => x !== i);
-  } else {
-    progress.push(i);
+// TRACKER
+function renderTracker(){
+  const tracker = document.getElementById("tracker");
+  tracker.innerHTML="";
+  for(let i=1;i<=30;i++){
+    let div = document.createElement("div");
+    div.classList.add("day");
+
+    if(localStorage.getItem("day"+i)=="done") div.classList.add("done");
+    if(localStorage.getItem("day"+i)=="fail") div.classList.add("fail");
+
+    tracker.appendChild(div);
   }
-  localStorage.setItem("progress", JSON.stringify(progress));
-  render();
 }
 
-function updateProgress() {
-  const percent = Math.round((progress.length / exercises.length) * 100);
-  document.getElementById("progressBar").style.width = percent + "%";
-  document.getElementById("progressText").innerText = percent + "% completado";
+// COMPLETAR
+function completeDay(){
+  localStorage.setItem("day"+day,"done");
+  renderTracker();
 }
 
-function resetDay() {
-  localStorage.removeItem("progress");
-  progress = [];
-  render();
+// FALLAR (ANTI EXCUSA)
+function failDay(){
+  alert("Fallaste. Reinicio de disciplina.");
+  for(let i=1;i<=30;i++){
+    localStorage.removeItem("day"+i);
+  }
+  renderTracker();
 }
 
-render();
+renderTracker();
+
+// ALARMA 6:30 AM
+function alarm(){
+  const now = new Date();
+  if(now.getHours()==6 && now.getMinutes()==30){
+    alert("Entrena ahora. Sin excusas.");
+  }
+}
+
+setInterval(alarm,60000);
+
 </script>
 
 </body>
