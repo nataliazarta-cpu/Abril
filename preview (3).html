@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIOS 4 - FITNESS</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0a0a0a;
+  color:white;
+}
+.container{
+  max-width:500px;
+  margin:auto;
+  padding:15px;
+}
+h1{
+  text-align:center;
+  color:#00ff88;
+}
+.card{
+  background:#111;
+  padding:15px;
+  margin:10px 0;
+  border-radius:10px;
+}
+button{
+  width:100%;
+  padding:15px;
+  margin-top:10px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:bold;
+}
+.start{background:#00ff88;}
+.done{background:#0077ff;color:white;}
+.fail{background:#ff4444;color:white;}
+.progress{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:5px;
+}
+.day{
+  height:25px;
+  background:#222;
+  border-radius:5px;
+}
+.doneDay{background:#00ff88;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔥 MODO DIOS 4</h1>
+
+<div class="card">
+<h2 id="title"></h2>
+<p id="info"></p>
+<p id="timer">⏱ 0</p>
+
+<button class="start" onclick="start()">INICIAR</button>
+<button class="done" onclick="complete()">COMPLETADO</button>
+<button class="fail" onclick="fail()">FALLÉ</button>
+</div>
+
+<div class="card">
+<h3>💧 Agua</h3>
+<p id="waterText">0 / 2.45 L</p>
+<button onclick="addWater()">+0.25 L</button>
+</div>
+
+<div class="card">
+<h3>📅 Progreso</h3>
+<div class="progress" id="progress"></div>
+</div>
+
+</div>
+
+<script>
+
+// ===== BASE =====
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+
+// ===== STATE =====
+let week = clamp(parseInt(localStorage.getItem("week")||1),1,12);
+let day = clamp(parseInt(localStorage.getItem("day")||1),1,4);
+let exercise = 0;
+let water = parseFloat(localStorage.getItem("water")||0);
+
+// ===== DATA =====
+const routine = [
+  ["Sentadilla 15 reps","Flexiones 10 reps","Plancha 30s"],
+  ["Zancadas 12 reps","Flexiones inclinadas 12","Plancha lateral 20s"],
+  ["Sentadilla pausa 12","Flexiones 8","Plancha 40s"],
+  ["Zancadas 15","Flexiones 10","Plancha lateral 25s"]
+];
+
+// ===== UI =====
+function render(){
+  let ex = routine[day-1][exercise];
+  document.getElementById("title").innerText = "Semana "+week+" Día "+day;
+  document.getElementById("info").innerText = ex;
+  document.getElementById("waterText").innerText = water.toFixed(2)+" / 2.45 L";
+  renderProgress();
+}
+
+// ===== TIMER =====
+let t=0, interval;
+
+function start(){
+  speak("Inicia");
+  clearInterval(interval);
+  t=0;
+  interval=setInterval(()=>{
+    t++;
+    document.getElementById("timer").innerText="⏱ "+t+"s";
+  },1000);
+}
+
+// ===== COMPLETE =====
+function complete(){
+  speak("Bien hecho");
+  clearInterval(interval);
+  exercise++;
+
+  if(exercise>=3){
+    nextDay();
+  }
+
+  render();
+}
+
+// ===== FAIL =====
+function fail(){
+  speak("Fallaste. Sin excusas.");
+  week = Math.max(1,week-1);
+  save();
+  render();
+}
+
+// ===== NEXT DAY =====
+function nextDay(){
+  exercise=0;
+  day++;
+
+  if(day>4){
+    day=1;
+    week++;
+  }
+
+  save();
+}
+
+// ===== WATER =====
+function addWater(){
+  water +=0.25;
+  if(water>2.45) water=2.45;
+  localStorage.setItem("water",water);
+  render();
+}
+
+// ===== SAVE =====
+function save(){
+  localStorage.setItem("week",week);
+  localStorage.setItem("day",day);
+}
+
+// ===== PROGRESS =====
+function renderProgress(){
+  let el=document.getElementById("progress");
+  el.innerHTML="";
+  for(let i=0;i<28;i++){
+    let d=document.createElement("div");
+    d.className="day";
+    if(i<((week-1)*4+day)) d.classList.add("doneDay");
+    el.appendChild(d);
+  }
+}
+
+// ===== VOZ =====
+function speak(text){
+  let msg = new SpeechSynthesisUtterance(text);
+  msg.lang="es-ES";
+  speechSynthesis.speak(msg);
+}
+
+// ===== INIT =====
+render();
+
+</script>
+
+</body>
+</html>
