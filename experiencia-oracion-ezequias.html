@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Experiencia de Oración de Ezequías</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Cormorant+Garamond:wght@500&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2 { font-family: 'Cormorant Garamond', serif; }
+    .glass { background: rgba(248,244,240,0.95); backdrop-filter: blur(20px); }
+  </style>
+</head>
+<body class="bg-[#F8F4F0] text-[#2C2C2C]">
+  <div class="max-w-4xl mx-auto p-8">
+    <div class="text-center py-12">
+      <h1 class="text-5xl font-light tracking-tight">La Experiencia de Oración de Ezequías</h1>
+      <p class="text-[#A8B5A2] text-2xl mt-3">Un viaje profundo por 2 Reyes 19-20</p>
+      <button onclick="startJourney()" class="mt-10 px-12 py-5 bg-[#A8B5A2] text-white rounded-3xl text-lg font-medium">INICIAR VIAJE DE ORACIÓN</button>
+    </div>
+
+    <div id="journey" class="hidden space-y-12">
+      <!-- Paso 1 -->
+      <div class="glass p-8 rounded-3xl">
+        <h2 class="text-2xl mb-4">1. La Amenaza (2 Reyes 19:8-13)</h2>
+        <p class="leading-relaxed text-[#5D5D5D]">Senaquerib envía una carta blasfema. Ezequías la lee delante de Jehová. Cita de Spurgeon: “La mejor forma de enfrentar al enemigo es poner la carta en las manos de Dios.”</p>
+        <textarea id="amenaza" placeholder="¿Qué amenaza estás llevando hoy delante de Dios?" class="w-full mt-6 p-5 rounded-2xl border border-[#A8B5A2]/30 h-28"></textarea>
+      </div>
+
+      <!-- Paso 2 -->
+      <div class="glass p-8 rounded-3xl">
+        <h2 class="text-2xl mb-4">2. La Oración (2 Reyes 19:15-19)</h2>
+        <p class="leading-relaxed text-[#5D5D5D]">“Tú solo eres Dios.” Palabra hebrea: בָּטַח (bāṭaḥ) – confiar plenamente. R.C. Sproul: “La oración no cambia a Dios, cambia al que ora.”</p>
+        <textarea id="oracion" placeholder="Escribe tu oración de confianza como Ezequías" class="w-full mt-6 p-5 rounded-2xl border border-[#A8B5A2]/30 h-40"></textarea>
+      </div>
+
+      <!-- Paso 3 -->
+      <div class="glass p-8 rounded-3xl">
+        <h2 class="text-2xl mb-4">3. La Respuesta de Dios (2 Reyes 19:32-36 y 20:5)</h2>
+        <p class="leading-relaxed text-[#5D5D5D]">Dios envió un ángel. “He oído tu oración, he visto tus lágrimas.” Reflexión: ¿crees que Dios ve tus lágrimas?</p>
+        <input id="respuesta" placeholder="¿Qué respuesta de Dios estás esperando?" class="w-full mt-6 p-5 rounded-2xl border border-[#A8B5A2]/30">
+      </div>
+
+      <!-- Paso 4 -->
+      <div class="glass p-8 rounded-3xl">
+        <h2 class="text-2xl mb-4">4. La Advertencia (2 Reyes 20:12-19)</h2>
+        <p class="leading-relaxed text-[#5D5D5D]">Ezequías mostró sus tesoros. David Guzik: “La bendición puede convertirse en prueba si no la manejamos con humildad.”</p>
+        <textarea id="advertencia" placeholder="¿Qué tesoro personal debo guardar con humildad?" class="w-full mt-6 p-5 rounded-2xl border border-[#A8B5A2]/30 h-28"></textarea>
+      </div>
+
+      <button onclick="saveJourney()" class="w-full py-6 bg-[#2C2C2C] text-white rounded-3xl text-lg">GUARDAR MI VIAJE DE ORACIÓN</button>
+    </div>
+
+    <div class="mt-16 text-center">
+      <p class="italic text-[#5D5D5D]">“Señor, Tú solo eres Dios. Amén.”</p>
+      <p class="text-xs mt-8 text-[#A8B5A2]">Por: Natalia Zarta</p>
+    </div>
+  </div>
+
+  <script>
+    function startJourney() { document.getElementById('journey').classList.remove('hidden'); }
+    function saveJourney() {
+      localStorage.setItem('hezekiahPrayerJourney', JSON.stringify({
+        amenaza: document.getElementById('amenaza').value,
+        oracion: document.getElementById('oracion').value,
+        respuesta: document.getElementById('respuesta').value,
+        advertencia: document.getElementById('advertencia').value,
+        date: new Date().toISOString()
+      }));
+      alert('✅ Tu viaje de oración ha sido guardado. Dios te escucha.');
+    }
+    tailwind.config = { theme: { extend: { colors: { sage: '#A8B5A2' } } } };
+  </script>
+</body>
+</html>

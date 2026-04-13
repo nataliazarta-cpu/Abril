@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hezekiah Prayer Experience</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Cormorant+Garamond:wght@500&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2 { font-family: 'Cormorant Garamond', serif; }
+    .glass { background: rgba(248,244,240,0.95); backdrop-filter: blur(20px); }
+  </style>
+</head>
+<body class="bg-[#F8F4F0] text-[#2C2C2C]">
+  <div class="max-w-4xl mx-auto p-8">
+    <div class="text-center py-12">
+      <h1 class="text-5xl font-light tracking-tight">The Hezekiah Prayer Experience</h1>
+      <p class="text-[#A8B5A2] text-2xl mt-3">A deep journey through 2 Kings 19-20</p>
+      <button onclick="startJourney()" class="mt-10 px-12 py-5 bg-[#A8B5A2] text-white rounded-3xl text-lg font-medium">START THE PRAYER JOURNEY</button>
+    </div>
+
+    <div id="journey" class="hidden space-y-12">
+      <div class="glass p-8 rounded-3xl">
+        <h2 class="text-2xl mb-4">1. The Threat (2 Kings 19:8-13)</h2>
+        <p class="leading-relaxed text-[#5D5D5D]">Sennacherib sends a blasphemous letter. Hezekiah spreads it before the LORD. Spurgeon: “The best way to face the enemy is to put the letter in God’s hands.”</p>
+        <textarea id="amenaza" placeholder="What threat are you bringing before God today?" class="w-full mt-6 p-5 rounded-2xl border border-[#A8B5A2]/30 h-28"></textarea>
+      </div>
+
+      <div class="glass p-8 rounded-3xl">
+        <h2 class="text-2xl mb-4">2. The Prayer (2 Kings 19:15-19)</h2>
+        <p class="leading-relaxed text-[#5D5D5D]">“You alone are God.” Hebrew: בָּטַח (bāṭaḥ) – to trust completely. R.C. Sproul: “Prayer does not change God, it changes the one who prays.”</p>
+        <textarea id="oracion" placeholder="Write your own prayer of trust like Hezekiah" class="w-full mt-6 p-5 rounded-2xl border border-[#A8B5A2]/30 h-40"></textarea>
+      </div>
+
+      <div class="glass p-8 rounded-3xl">
+        <h2 class="text-2xl mb-4">3. God’s Answer (2 Kings 19:32-36 & 20:5)</h2>
+        <p class="leading-relaxed text-[#5D5D5D]">God sent an angel. “I have heard your prayer, I have seen your tears.” Reflection: Do you believe God sees your tears?</p>
+        <input id="respuesta" placeholder="What answer from God are you waiting for?" class="w-full mt-6 p-5 rounded-2xl border border-[#A8B5A2]/30">
+      </div>
+
+      <div class="glass p-8 rounded-3xl">
+        <h2 class="text-2xl mb-4">4. The Warning (2 Kings 20:12-19)</h2>
+        <p class="leading-relaxed text-[#5D5D5D]">Hezekiah showed his treasures. David Guzik: “Blessing can become a test if we do not handle it with humility.”</p>
+        <textarea id="advertencia" placeholder="What personal treasure must I guard with humility?" class="w-full mt-6 p-5 rounded-2xl border border-[#A8B5A2]/30 h-28"></textarea>
+      </div>
+
+      <button onclick="saveJourney()" class="w-full py-6 bg-[#2C2C2C] text-white rounded-3xl text-lg">SAVE MY PRAYER JOURNEY</button>
+    </div>
+
+    <div class="mt-16 text-center">
+      <p class="italic text-[#5D5D5D]">“Lord, You alone are God. Amen.”</p>
+      <p class="text-xs mt-8 text-[#A8B5A2]">By: Natalia Zarta</p>
+    </div>
+  </div>
+
+  <script>
+    function startJourney() { document.getElementById('journey').classList.remove('hidden'); }
+    function saveJourney() {
+      localStorage.setItem('hezekiahPrayerJourney', JSON.stringify({
+        amenaza: document.getElementById('amenaza').value,
+        oracion: document.getElementById('oracion').value,
+        respuesta: document.getElementById('respuesta').value,
+        advertencia: document.getElementById('advertencia').value,
+        date: new Date().toISOString()
+      }));
+      alert('✅ Your prayer journey has been saved. God hears you.');
+    }
+    tailwind.config = { theme: { extend: { colors: { sage: '#A8B5A2' } } } };
+  </script>
+</body>
+</html>
