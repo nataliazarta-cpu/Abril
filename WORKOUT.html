@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#060606;--c1:#0f0f0f;--c2:#161616;--bor:#1d1d1d;
+  --t:#FFFFFF;--m:#555;--s:#888;
+  --a:#C9A84C;--g:#22c55e;--bl:#3b82f6;--rd:#ef4444;
+  --p1:#3b82f6;--p2:#C9A84C;--p3:#ef4444;
+}
+html,body{height:100%;background:var(--bg);}
+body{
+  color:var(--t);font-family:'DM Sans',sans-serif;
+  max-width:430px;margin:0 auto;
+  padding:0 16px 60px;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* Header */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 0 10px;}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;letter-spacing:3px;color:var(--a);}
+.badge{padding:5px 13px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:1px solid;}
+/* Obj card */
+.obj{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:13px 15px;margin-bottom:18px;}
+.obj-l{font-size:10px;color:var(--a);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
+.obj-t{font-size:14px;color:var(--t);font-weight:500;line-height:1.3;}
+/* Pills */
+.slabel{font-size:10px;color:var(--m);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.pills{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;margin-bottom:18px;}
+.pills::-webkit-scrollbar{display:none;}
+.pill{flex-shrink:0;min-width:38px;padding:8px 11px;border-radius:20px;border:1px solid var(--bor);background:var(--c1);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;}
+.pill.active{color:#000;font-weight:800;border-color:transparent;}
+/* Day cards */
+.day-card{background:var(--c1);border:1.5px solid var(--bor);border-radius:14px;padding:14px 16px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s;}
+.day-card.sel{background:var(--c2);border-color:var(--a);}
+.day-em{font-size:26px;flex-shrink:0;}
+.day-num{font-size:10px;color:var(--m);letter-spacing:1px;text-transform:uppercase;}
+.day-nm{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;line-height:1;}
+.day-arr{margin-left:auto;font-size:18px;color:var(--m);}
+/* Info chips */
+.info-row{display:flex;gap:8px;margin:12px 0 16px;}
+.chip{flex:1;background:var(--c1);border:1px solid var(--bor);border-radius:10px;padding:10px 0;text-align:center;}
+.chip-n{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:var(--a);}
+.chip-l{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:1px;}
+/* Buttons */
+.btn-go{width:100%;padding:18px;border-radius:14px;background:var(--a);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:2px;border:none;cursor:pointer;margin-bottom:18px;transition:transform .1s;}
+.btn-go:active{transform:scale(.98);}
+.btn-p{width:100%;padding:16px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:1.5px;border:none;cursor:pointer;margin-bottom:8px;transition:transform .1s;color:#000;}
+.btn-p:active{transform:scale(.98);}
+.btn-s{width:100%;padding:12px;border-radius:12px;background:var(--c1);color:var(--s);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;border:1px solid var(--bor);cursor:pointer;transition:all .15s;}
+.btn-s:hover{color:var(--t);border-color:var(--s);}
+/* Water */
+.water-wrap{background:var(--c1);border:1px solid var(--bor);border-radius:14px;padding:14px;}
+.water-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.water-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;}
+.water-stat{font-size:12px;color:var(--s);}
+.glasses{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px;}
+.glass{width:43px;height:54px;border-radius:10px;border:1.5px solid var(--bor);cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:5px;transition:border-color .2s;}
+.glass.on{border-color:#3b82f6;}
+.gfill{position:absolute;bottom:0;left:0;right:0;background:rgba(59,130,246,.22);transition:height .3s;}
+.gico{font-size:15px;position:relative;z-index:1;}
+.gnum{font-size:9px;color:var(--m);position:relative;z-index:1;font-weight:700;}
+.wbar{height:4px;background:var(--bor);border-radius:2px;overflow:hidden;}
+.wfill{height:100%;background:#3b82f6;border-radius:2px;transition:width .4s;}
+/* Workout screen */
+.ex-hdr{display:flex;align-items:center;gap:10px;padding:16px 0 10px;}
+.back-btn{width:36px;height:36px;border-radius:10px;background:var(--c1);border:1px solid var(--bor);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0;}
+.prog-wrap{flex:1;}
+.prog-info{display:flex;justify-content:space-between;font-size:11px;color:var(--m);margin-bottom:5px;}
+.prog-bar{height:3px;background:var(--bor);border-radius:2px;}
+.prog-fill{height:100%;border-radius:2px;transition:width .4s;}
+/* Exercise card */
+.ex-card{background:var(--c1);border:1.5px solid var(--bor);border-radius:18px;padding:20px;margin-bottom:12px;}
+.ex-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;}
+.ex-name{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;line-height:1.1;flex:1;padding-right:10px;}
+.tbadge{padding:4px 10px;border-radius:8px;font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;flex-shrink:0;margin-top:4px;}
+.tr{background:rgba(59,130,246,.15);color:#3b82f6;}
+.rp{background:rgba(201,168,76,.15);color:var(--a);}
+.ex-note{font-size:13px;color:var(--s);line-height:1.5;padding:12px 0;border-top:1px solid var(--bor);border-bottom:1px solid var(--bor);margin:8px 0 14px;}
+.sets-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.slbl{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:1px;}
+.dot{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--bor);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--m);transition:all .25s;}
+.dot.done{background:var(--a);border-color:var(--a);color:#000;}
+.dot.cur{border-color:var(--a);color:var(--a);}
+.rest-hint{margin-left:auto;font-size:11px;color:var(--m);}
+/* Timer */
+.timer-wrap{text-align:center;padding:18px 0 8px;}
+.t-ring{position:relative;width:150px;height:150px;margin:0 auto 10px;}
+.t-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Barlow Condensed',sans-serif;font-size:50px;font-weight:900;line-height:1;}
+.t-lbl{font-size:10px;color:var(--m);letter-spacing:2px;text-transform:uppercase;}
+/* Reps display */
+.reps-wrap{text-align:center;padding:14px 0 8px;}
+.rep-num{font-family:'Barlow Condensed',sans-serif;font-size:90px;font-weight:900;line-height:1;}
+.rep-lbl{font-size:11px;color:var(--m);letter-spacing:2px;text-transform:uppercase;}
+/* All done display */
+.all-done-disp{text-align:center;padding:20px 0 12px;}
+/* Scale */
+.scale{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);border-radius:10px;padding:11px 14px;margin-bottom:12px;}
+.scale-l{font-size:9px;color:var(--a);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:3px;}
+.scale-t{font-size:12px;color:var(--s);line-height:1.4;}
+/* Rest screen */
+.rest-wrap{text-align:center;padding:44px 0 24px;}
+.rest-l{font-size:11px;color:var(--m);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;}
+.rest-t{font-family:'Barlow Condensed',sans-serif;font-size:100px;font-weight:900;line-height:1;margin-bottom:8px;}
+.rest-sub{font-size:13px;color:var(--m);margin-bottom:28px;}
+.nxt-prev{background:var(--c1);border:1px solid var(--bor);border-radius:12px;padding:13px;text-align:left;margin-bottom:20px;}
+.nxt-l{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.nxt-n{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;}
+/* Done screen */
+.done-wrap{text-align:center;padding:36px 0 20px;}
+.done-ico{font-size:58px;margin-bottom:14px;}
+.done-ttl{font-family:'Barlow Condensed',sans-serif;font-size:46px;font-weight:900;margin-bottom:4px;}
+.done-sub{font-size:13px;color:var(--m);margin-bottom:24px;}
+.stats{display:flex;gap:8px;margin-bottom:18px;}
+.stat{flex:1;background:var(--c1);border:1px solid var(--bor);border-radius:12px;padding:14px 0;text-align:center;}
+.stat-n{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;}
+.stat-l{font-size:10px;color:var(--m);text-transform:uppercase;letter-spacing:1px;}
+.note-card{background:var(--c1);border:1px solid var(--bor);border-radius:12px;padding:14px;text-align:left;margin-bottom:18px;}
+.note-l{font-size:10px;color:var(--a);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;font-weight:700;}
+.note-t{font-size:13px;color:var(--s);line-height:1.5;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ═══════════════════════════════════════
+//  DATOS DE ENTRENAMIENTO
+// ═══════════════════════════════════════
+const W={
+ 1:{ // Pierna + Core
+  1:[
+   {n:"Sentadilla sumo",t:"reps",s:3,r:12,rest:45,note:"Pies separados, puntas hacia afuera. Control en cada descenso. Rodillas alineadas con los pies.",sc:"S3-4: agrega mochila con 2-3 kg en el pecho"},
+   {n:"Zancadas alternas",t:"reps",s:3,r:10,rest:45,note:"Alterna piernas. La rodilla delantera no pasa el pie. Core activado.",sc:"+2 reps cada semana hasta 16"},
+   {n:"Puente de glúteo",t:"reps",s:3,r:15,rest:30,note:"Aprieta el glúteo en la cima. Baja con control, no dejes caer.",sc:"S3: pausa 2 segundos arriba antes de bajar"},
+   {n:"Sentadilla isométrica pared",t:"time",s:3,d:30,rest:45,note:"90° en rodillas. Espalda plana en la pared. No te separes.",sc:"+10 segundos cada semana hasta 60s"},
+   {n:"Plancha frontal",t:"time",s:3,d:30,rest:30,note:"Cuerpo recto. Aprieta abdomen y glúteo. Respira despacio.",sc:"+10 segundos cada semana hasta 60s"},
+   {n:"Elevación de piernas",t:"reps",s:3,r:12,rest:30,note:"Acostada boca arriba, piernas rectas. Baja lento sin tocar el piso.",sc:"S4: agrega flexión de rodilla al bajar"}
+  ],
+  2:[
+   {n:"Sentadilla sumo con mochila",t:"reps",s:4,r:15,rest:40,note:"Mochila en el pecho o brazos extendidos. Control total en el descenso.",sc:"Aumenta peso mochila en semana 7"},
+   {n:"Zancadas con pausa 1s",t:"reps",s:4,r:12,rest:40,note:"Pausa 1 segundo abajo. Rodilla casi toca el piso. Sube explosivo.",sc:"Agrega mochila semana 7"},
+   {n:"Puente de glúteo una pierna",t:"reps",s:3,r:12,rest:30,note:"Una pierna extendida. Empuja fuerte con el talón. No dejes caer la cadera.",sc:"+3 reps por semana"},
+   {n:"Sentadilla isométrica pared",t:"time",s:4,d:45,rest:40,note:"Más tiempo, mismo control. No te muevas en los últimos segundos.",sc:"+10s en semana 8 → 55s"},
+   {n:"Plancha con toque de hombro",t:"reps",s:3,r:10,rest:30,note:"En plancha, toca el hombro opuesto. Sin rotar la cadera.",sc:"+2 reps por semana hasta 16"},
+   {n:"Tijeras abdominales",t:"reps",s:3,r:15,rest:30,note:"Piernas rectas alternadas. Zona lumbar siempre pegada al piso.",sc:"Baja más las piernas hacia el suelo"}
+  ],
+  3:[
+   {n:"Sentadilla búlgara con mochila",t:"reps",s:4,r:12,rest:45,note:"Pie trasero en silla. Mochila cargada. Control total. Sin que la rodilla se vaya adentro.",sc:"Aumenta peso en semana 11"},
+   {n:"Zancadas con mochila pausa 2s",t:"reps",s:4,r:14,rest:35,note:"Pausa 2 segundos abajo. Explota hacia arriba. Carga visible en mochila.",sc:"Más peso semana 11"},
+   {n:"Puente una pierna avanzado",t:"reps",s:4,r:12,rest:30,note:"Pie trasero en silla. Eleva la cadera de forma explosiva. Baja controlado.",sc:"+rep por semana"},
+   {n:"Sentadilla isométrica con mochila",t:"time",s:4,d:60,rest:35,note:"60 segundos. Mochila sobre los muslos. Sin rendirte en los últimos 10.",sc:"Más peso semana 11"},
+   {n:"Plancha lateral con elevación",t:"time",s:3,d:35,rest:30,note:"En plancha lateral, sube y baja la cadera de forma controlada.",sc:"+10s por semana"},
+   {n:"Elevación de piernas 3s",t:"reps",s:3,r:12,rest:45,note:"3 segundos bajando. Sin tocar el piso. Control máximo.",sc:"Amplía el rango de movimiento"}
+  ]
+ },
+ 2:{ // Tren Superior
+  1:[
+   {n:"Flexión clásica (o rodillas)",t:"reps",s:3,r:8,rest:45,note:"Cuerpo recto. Codos a 45°. Baja 2 segundos, empuja firme.",sc:"S3: pasa a flexión completa"},
+   {n:"Remo con mochila en silla",t:"reps",s:3,r:10,rest:45,note:"Apóyate en silla con una mano. Jala la mochila hacia la cadera. Espalda recta.",sc:"+peso mochila cada 2 semanas"},
+   {n:"Press de hombro sentada",t:"reps",s:3,r:10,rest:45,note:"Espalda recta. Empuja la mochila hacia arriba. Baja con control.",sc:"+peso semana 3"},
+   {n:"Superman",t:"reps",s:3,r:12,rest:30,note:"Boca abajo. Eleva brazos, pecho y piernas al mismo tiempo. Aprieta.",sc:"S3: pausa 3 segundos arriba"},
+   {n:"Extensión de tríceps toalla",t:"reps",s:3,r:15,rest:30,note:"Toalla tensa detrás de la cabeza. Extiende los codos. Codos quietos.",sc:"+5 reps por semana"},
+   {n:"Marcha estática",t:"time",s:3,d:45,rest:30,note:"Rodillas al pecho alternando. Ritmo constante. Sin saltos.",sc:"+15 segundos cada semana"}
+  ],
+  2:[
+   {n:"Flexión diamante",t:"reps",s:4,r:10,rest:40,note:"Pulgares e índices se tocan. Enfoca tríceps. Baja lento.",sc:"+2 reps por semana"},
+   {n:"Remo con mochila inclinada",t:"reps",s:4,r:12,rest:40,note:"Inclinada 90°. Espalda paralela al suelo. Jala fuerte hacia el ombligo.",sc:"+peso semana 7"},
+   {n:"Press hombro de pie",t:"reps",s:3,r:12,rest:40,note:"De pie. Core firme. Empuja la mochila arriba. Baja lento.",sc:"+peso semana 7"},
+   {n:"Superman con pausa 3s",t:"reps",s:3,r:12,rest:30,note:"3 segundos arriba apretando la espalda. Baja controlado.",sc:"+2 reps por semana"},
+   {n:"Dip en silla",t:"reps",s:3,r:10,rest:35,note:"Manos en silla. Codos atrás. Baja 90°. No abras los codos.",sc:"+3 reps por semana"},
+   {n:"Marcha con brazos extendidos",t:"time",s:3,d:60,rest:30,note:"Coordina brazos al frente con rodillas. Ritmo sostenido.",sc:"+15s por semana"}
+  ],
+  3:[
+   {n:"Flexión descenso 4 segundos",t:"reps",s:4,r:10,rest:45,note:"Baja en 4 segundos. Empuja rápido. Control y potencia.",sc:"+2 reps semana 11"},
+   {n:"Remo unilateral con mochila",t:"reps",s:4,r:12,rest:35,note:"Una mano. Apoyo en silla. Jala fuerte hacia la cadera. Máximo rango.",sc:"+peso"},
+   {n:"Press hombro con pausa",t:"reps",s:4,r:12,rest:35,note:"Pausa 2 segundos abajo. Activa el hombro. Empuja con fuerza.",sc:"+peso semana 11"},
+   {n:"Superman compuesto",t:"reps",s:3,r:15,rest:30,note:"Eleva + abre brazos al frente + cierra = 1 rep completa.",sc:"+3 reps semana 11"},
+   {n:"Dip con pausa isométrica",t:"reps",s:4,r:10,rest:35,note:"Pausa 2 segundos en el punto más bajo. Empuja fuerte hacia arriba.",sc:"+2 reps semana 11"},
+   {n:"Cardio brazos con mochila",t:"time",s:3,d:45,rest:30,note:"Marcha con mochila al pecho. Brazos activos y coordinados.",sc:"+15s por semana"}
+  ]
+ },
+ 3:{ // Glúteo + Abdomen
+  1:[
+   {n:"Patada de glúteo cuadrupedia",t:"reps",s:3,r:15,rest:30,note:"En 4 puntos. Pierna recta atrás. Aprieta el glúteo en la cima. Sin abrir la cadera.",sc:"+5 reps por semana"},
+   {n:"Elevación lateral cuadrupedia",t:"reps",s:3,r:15,rest:30,note:"Rodilla doblada. Eleva hacia el lado. Siente el glúteo medio. Control.",sc:"+5 reps / luego tobillera con mochila pequeña"},
+   {n:"Puente con pausa 2s",t:"reps",s:3,r:12,rest:30,note:"2 segundos arriba apretando fuerte el glúteo. Baja sin dejar caer.",sc:"S3: pasa a una sola pierna"},
+   {n:"Crunch clásico",t:"reps",s:3,r:15,rest:30,note:"Baja lento. Sin jalarte el cuello. Solo el abdomen sube. Exhala arriba.",sc:"+5 reps por semana"},
+   {n:"Bicicleta abdominal",t:"reps",s:3,r:20,rest:30,note:"Codo al lado contrario. Movimiento lento y controlado. Sin prisa.",sc:"+5 reps / luego más lento aún"},
+   {n:"Plancha lateral",t:"time",s:3,d:25,rest:30,note:"Cuerpo recto. Cadera arriba. No dejes caer la cadera entre reps.",sc:"+10s por semana hasta 55s"}
+  ],
+  2:[
+   {n:"Patada con resistencia mochila",t:"reps",s:4,r:20,rest:30,note:"Mochila pequeña en tobillo como resistencia. Control total. Sin balanceo.",sc:"+peso"},
+   {n:"Elevación lateral con pausa 2s",t:"reps",s:4,r:15,rest:30,note:"2 segundos sostenida arriba. Siente el glúteo medio trabajar.",sc:"+5 reps semana 7"},
+   {n:"Puente de glúteo una pierna",t:"reps",s:4,r:15,rest:30,note:"Empuja fuerte con el talón. Cadera completa arriba. Sin torcer.",sc:"+3 reps por semana"},
+   {n:"Crunch con giro",t:"reps",s:3,r:20,rest:30,note:"Sube y gira hacia cada lado alternando. Codo al lado contrario.",sc:"+5 reps por semana"},
+   {n:"Bicicleta lenta (3s por rep)",t:"reps",s:3,r:20,rest:30,note:"3 segundos por repetición. Máximo control del core. Sin velocidad.",sc:"Hazlo aún más lento"},
+   {n:"Plancha lateral con elevación",t:"time",s:3,d:35,rest:30,note:"Sube y baja la cadera de forma controlada en plancha lateral.",sc:"+10s por semana"}
+  ],
+  3:[
+   {n:"Patada explosiva con control",t:"reps",s:4,r:20,rest:25,note:"Rápido arriba. Lento abajo 3 segundos. Controla cada rep.",sc:"+5 reps semana 11"},
+   {n:"Elevación lateral + 3 círculos",t:"reps",s:4,r:15,rest:25,note:"Eleva + 3 círculos pequeños al frente = 1 rep completa.",sc:"+2 reps por semana"},
+   {n:"Puente una pierna con peso",t:"reps",s:4,r:15,rest:30,note:"Mochila sobre la cadera. Una pierna. Explosivo arriba.",sc:"+peso semana 11"},
+   {n:"Bicicleta isométrica sostenida",t:"time",s:3,d:40,rest:30,note:"Posición de bicicleta sostenida. Core en fuego. No bajes los pies.",sc:"+10s por semana"},
+   {n:"Tijeras lentas con control",t:"reps",s:3,r:20,rest:30,note:"Piernas rectas. Zona lumbar pegada al piso. Amplitud máxima.",sc:"Amplía el rango de movimiento"},
+   {n:"Plancha lateral + pierna elevada",t:"time",s:3,d:35,rest:30,note:"En plancha lateral, eleva la pierna superior. Sostén todo el tiempo.",sc:"+10s por semana"}
+  ]
+ },
+ 4:{ // Full Body Silencioso
+  1:[
+   {n:"Sentadilla + press mochila",t:"reps",s:3,r:10,rest:45,note:"Baja en sentadilla. Al subir, empuja la mochila hacia el techo. Un movimiento fluido.",sc:"+peso mochila semana 3"},
+   {n:"Flexión con pausa abajo",t:"reps",s:3,r:8,rest:45,note:"1 segundo en el punto más bajo. Sin descansar en el suelo. Control.",sc:"+2 reps por semana"},
+   {n:"Estocada reversa",t:"reps",s:3,r:10,rest:45,note:"Paso atrás. Rodilla casi toca el piso. Core firme. Sube sin balanceo.",sc:"+2 reps por semana"},
+   {n:"Superman con pausa 3s",t:"reps",s:3,r:10,rest:30,note:"3 segundos arriba. Baja lento. Espalda y glúteos activos.",sc:"+3 reps por semana"},
+   {n:"Plancha con toque de hombro",t:"reps",s:3,r:10,rest:30,note:"En plancha. Toca el hombro contrario. Sin rotar la cadera.",sc:"+2 reps por semana"},
+   {n:"Estiramiento de cadera",t:"time",s:2,d:60,rest:15,note:"Lunge estático. Cadera baja hacia el piso. Respira profundo. Movilidad activa.",sc:"Profundiza cada semana"}
+  ],
+  2:[
+   {n:"Sentadilla + press cargado",t:"reps",s:4,r:12,rest:40,note:"Mochila más cargada. Explosivo al subir y empujar. Un movimiento.",sc:"+peso"},
+   {n:"Flexión diamante + clásica",t:"reps",s:4,r:8,rest:40,note:"4 reps diamante + 4 reps clásica = 1 serie completa. Sin descanso entre.",sc:"+2 reps por semana"},
+   {n:"Estocada reversa con mochila",t:"reps",s:4,r:12,rest:40,note:"Mochila en el pecho. Profunda. Control total en el descenso.",sc:"+peso semana 7"},
+   {n:"Superman compuesto",t:"reps",s:3,r:12,rest:30,note:"Eleva + abre brazos al frente + cierra = 1 rep.",sc:"+3 reps por semana"},
+   {n:"Plancha con extensión pierna",t:"reps",s:3,r:10,rest:30,note:"En plancha, extiende una pierna alternada. Sin rotar la cadera.",sc:"+3 reps por semana"},
+   {n:"Movilidad completa",t:"time",s:1,d:120,rest:0,note:"Cadena posterior, cadera y hombros. Respira profundo. Aprovecha cada segundo.",sc:"Amplía el rango cada semana"}
+  ],
+  3:[
+   {n:"Sentadilla búlgara + press",t:"reps",s:4,r:10,rest:45,note:"Pie en silla, mochila. Al subir, empuja al techo. Fuerza total.",sc:"+peso semana 11"},
+   {n:"Flexión descenso lento",t:"reps",s:4,r:8,rest:45,note:"Baja 4 segundos. Empuja rápido. Control y potencia real.",sc:"+2 reps semana 11"},
+   {n:"Estocada caminando con mochila",t:"reps",s:4,r:12,rest:35,note:"Camina en zancadas si tienes espacio. Carga en mochila al pecho.",sc:"+mochila"},
+   {n:"Superman pausa extendida",t:"reps",s:4,r:15,rest:30,note:"Brazos al frente. Pausa 3 segundos. Baja controlado. Espalda fuerte.",sc:"+5 reps semana 11"},
+   {n:"Plancha T con rotación",t:"reps",s:3,r:8,rest:35,note:"Flexión + rota el torso + extiende brazo al techo = 1 rep.",sc:"+2 reps por semana"},
+   {n:"Movilidad profunda",t:"time",s:1,d:180,rest:0,note:"Secuencia completa: cadera, columna, hombros. Calidad total. Tu cuerpo lo agradece.",sc:"Profundiza el rango cada semana"}
+  ]
+ }
+};
+
+const PHASES=[
+ {id:1,name:"BASE",color:"#3b82f6",weeks:[1,2,3,4]},
+ {id:2,name:"INTENSIDAD",color:"#C9A84C",weeks:[5,6,7,8]},
+ {id:3,name:"RENDIMIENTO",color:"#ef4444",weeks:[9,10,11,12]}
+];
+const DAYS=[
+ {id:1,name:"PIERNA + CORE",emoji:"🦵"},
+ {id:2,name:"TREN SUPERIOR",emoji:"💪"},
+ {id:3,name:"GLÚTEO + ABDOMEN",emoji:"🔥"},
+ {id:4,name:"FULL BODY",emoji:"⚡"}
+];
+const WOBJ={
+ 1:"Aprende la forma. No la velocidad.",
+ 2:"Control en cada bajada. Nada rápido.",
+ 3:"Suma 10s en planchas. Primera mochila.",
+ 4:"Test completo. Anota tus marcas.",
+ 5:"Sube 1 serie por ejercicio.",
+ 6:"Reduce el descanso 5 segundos.",
+ 7:"Más carga en la mochila.",
+ 8:"Tu semana más fuerte hasta ahora.",
+ 9:"Variantes avanzadas. Sin excusas.",
+ 10:"Intensidad máxima. Forma perfecta.",
+ 11:"Semana de potencia. Todo lo que tienes.",
+ 12:"Tu mejor semana. Evalúa y celebra."
+};
+
+// ═══════════════════════════════════════
+//  ESTADO
+// ═══════════════════════════════════════
+let S={
+ screen:"home",week:1,day:1,
+ exIdx:0,doneSets:[],
+ timerVal:0,timerMax:0,
+ timerRunning:false,timerInt:null,
+ water:0,startTime:null
+};
+function ph(){return PHASES.find(p=>p.weeks.includes(S.week))||PHASES[0];}
+function exs(){return W[S.day][ph().id];}
+function cur(){return exs()[S.exIdx];}
+
+// ═══════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════
+function render(){
+ document.getElementById("app").innerHTML=
+  S.screen==="home"?rHome():
+  S.screen==="workout"?rWorkout():
+  S.screen==="rest"?rRest():rDone();
+ if(S.screen==="home"){
+  setTimeout(()=>{
+   const p=document.querySelector(".pill.active");
+   if(p)p.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});
+  },60);
+ }
+}
+
+function rHome(){
+ const p=ph(),list=exs(),ts=list.reduce((a,e)=>a+e.s,0),w=S.water;
+ return `
+<div class="hdr">
+ <div class="logo">TRANSFORMA</div>
+ <div class="badge" style="background:${p.color}18;color:${p.color};border-color:${p.color}35">FASE ${p.id}·${p.name}</div>
+</div>
+<div class="obj">
+ <div class="obj-l">🎯 OBJETIVO SEMANA ${S.week}</div>
+ <div class="obj-t">${WOBJ[S.week]}</div>
+</div>
+<div class="slabel">SEMANA</div>
+<div class="pills">
+ ${[...Array(12)].map((_,i)=>`<div class="pill ${S.week===i+1?"active":""}" onclick="setW(${i+1})" style="${S.week===i+1?`background:${p.color};`:""}">S${i+1}</div>`).join("")}
+</div>
+<div class="slabel">DÍA DE ENTRENAMIENTO</div>
+${DAYS.map(d=>`
+<div class="day-card ${S.day===d.id?"sel":""}" onclick="setD(${d.id})">
+ <div class="day-em">${d.emoji}</div>
+ <div style="flex:1">
+  <div class="day-num">DÍA ${d.id}</div>
+  <div class="day-nm">${d.name}</div>
+ </div>
+ <div class="day-arr">${S.day===d.id?"▶":"›"}</div>
+</div>`).join("")}
+<div class="info-row">
+ <div class="chip"><div class="chip-n">${list.length}</div><div class="chip-l">EJERCICIOS</div></div>
+ <div class="chip"><div class="chip-n">${ts}</div><div class="chip-l">SERIES</div></div>
+ <div class="chip"><div class="chip-n">~30</div><div class="chip-l">MINUTOS</div></div>
+</div>
+<button class="btn-go" onclick="startW()">INICIAR ENTRENAMIENTO →</button>
+<div class="water-wrap">
+ <div class="water-hdr">
+  <div class="water-title">💧 AGUA HOY</div>
+  <div class="water-stat">${w}/8 vasos · ${(w*.3).toFixed(1)}L de 2.4L</div>
+ </div>
+ <div class="glasses">
+  ${[...Array(8)].map((_,i)=>`<div class="glass ${w>i?"on":""}" onclick="tapW(${i})"><div class="gfill" style="height:${w>i?100:0}%"></div><div class="gico">🥛</div><div class="gnum">${i+1}</div></div>`).join("")}
+ </div>
+ <div class="wbar"><div class="wfill" style="width:${(w/8*100).toFixed(0)}%"></div></div>
+ <div style="font-size:11px;color:${w>=8?"#22c55e":w>=4?"#C9A84C":"#555"};margin-top:8px;font-weight:600">
+  ${w>=8?"✅ META ALCANZADA":w>=4?"Vas bien, continúa hidratándote":"Comienza con tu primer vaso"}
+ </div>
+</div>`;
+}
+
+function rWorkout(){
+ const p=ph(),list=exs(),ex=cur();
+ const done=S.doneSets[S.exIdx]||0;
+ const allDone=done>=ex.s;
+ const isLast=S.exIdx>=list.length-1;
+ const prog=(S.exIdx/list.length)*100;
+
+ let mainD="";
+ if(allDone){
+  mainD=`<div class="all-done-disp"><div style="font-size:44px;margin-bottom:8px">✅</div><div style="font-size:13px;color:#555;letter-spacing:1.5px;text-transform:uppercase">${ex.s} SERIES COMPLETADAS</div></div>`;
+ } else if(ex.t==="time"){
+  const C=408.41;
+  const pct=S.timerMax>0?S.timerVal/S.timerMax:1;
+  const off=(C*(1-pct)).toFixed(2);
+  const mins=Math.floor(S.timerVal/60);
+  const secs=S.timerVal%60;
+  const ts=mins>0?`${mins}:${String(secs).padStart(2,"0")}`:String(S.timerVal);
+  mainD=`
+   <div class="timer-wrap">
+    <div class="t-ring">
+     <svg width="150" height="150" viewBox="0 0 150 150" style="transform:rotate(-90deg);display:block">
+      <circle fill="none" stroke="#1d1d1d" stroke-width="8" cx="75" cy="75" r="65"/>
+      <circle fill="none" stroke="${p.color}" stroke-width="8" cx="75" cy="75" r="65" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}" style="transition:stroke-dashoffset .5s"/>
+     </svg>
+     <div class="t-num" style="color:${p.color}">${ts}</div>
+    </div>
+    <div class="t-lbl">SEGUNDOS · SERIE ${done+1}/${ex.s}</div>
+   </div>`;
+ } else {
+  mainD=`<div class="reps-wrap"><div class="rep-num" style="color:${p.color}">${ex.r}</div><div class="rep-lbl">REPETICIONES · SERIE ${done+1}/${ex.s}</div></div>`;
+ }
+
+ let cta="";
+ if(!allDone){
+  if(ex.t==="time"){
+   if(S.timerRunning){
+    cta=`<button class="btn-p" onclick="pauseT()" style="background:#222;color:#fff">⏸ PAUSAR CRONÓMETRO</button>`;
+   } else if(S.timerVal>0&&S.timerVal<S.timerMax){
+    cta=`<button class="btn-p" onclick="startT()" style="background:${p.color}">▶ REANUDAR SERIE ${done+1}</button>`;
+   } else {
+    cta=`<button class="btn-p" onclick="startT()" style="background:${p.color}">▶ INICIAR SERIE ${done+1}</button>`;
+   }
+  } else {
+   cta=`<button class="btn-p" onclick="compSet()" style="background:${p.color}">✓ SERIE ${done+1} COMPLETADA</button>`;
+  }
+ }
+
+ let nxt="";
+ if(allDone){
+  nxt=isLast
+   ?`<button class="btn-p" onclick="finishW()" style="background:#22c55e">🏆 COMPLETAR ENTRENAMIENTO</button>`
+   :`<button class="btn-p" onclick="nextEx()" style="background:${p.color}">SIGUIENTE EJERCICIO →</button>`;
+ }
+
+ return `
+<div class="ex-hdr">
+ <div class="back-btn" onclick="goHome()">←</div>
+ <div class="prog-wrap">
+  <div class="prog-info">
+   <span style="color:#fff;font-weight:600">EJERCICIO ${S.exIdx+1}</span>
+   <span style="color:#555">de ${list.length}</span>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" style="width:${prog.toFixed(0)}%;background:${p.color}"></div></div>
+ </div>
+ <div class="badge" style="background:${p.color}18;color:${p.color};border-color:${p.color}35;font-size:9px">S${S.week}·D${S.day}</div>
+</div>
+<div class="ex-card">
+ <div class="ex-top">
+  <div class="ex-name">${ex.n}</div>
+  <div class="tbadge ${ex.t==="time"?"tr":"rp"}">${ex.t==="time"?"TIEMPO":"REPS"}</div>
+ </div>
+ <div class="ex-note">${ex.note}</div>
+ <div class="sets-row">
+  <div class="slbl">SERIES</div>
+  ${[...Array(ex.s)].map((_,i)=>`<div class="dot ${i<done?"done":i===done&&!allDone?"cur":""}">${i<done?"✓":i+1}</div>`).join("")}
+  <div class="rest-hint">${ex.rest}s desc.</div>
+ </div>
+ ${mainD}
+</div>
+<div class="scale">
+ <div class="scale-l">⬆ PROGRESIÓN</div>
+ <div class="scale-t">${ex.sc}</div>
+</div>
+${cta}
+${nxt}`;
+}
+
+function rRest(){
+ const p=ph(),ex=cur();
+ const done=S.doneSets[S.exIdx]||0;
+ const mins=Math.floor(S.timerVal/60);
+ const secs=S.timerVal%60;
+ const ts=mins>0?`${mins}:${String(secs).padStart(2,"0")}`:String(S.timerVal);
+ return `
+<div class="rest-wrap">
+ <div class="rest-l">DESCANSA</div>
+ <div class="rest-t" style="color:${p.color}">${ts}</div>
+ <div class="rest-sub">Respira. Prepárate.</div>
+ <div class="nxt-prev">
+  <div class="nxt-l">A CONTINUACIÓN</div>
+  <div class="nxt-n">Serie ${done+1} · ${ex.n}</div>
+ </div>
+ <button class="btn-p" onclick="skipR()" style="background:${p.color}">SALTAR DESCANSO →</button>
+ <button class="btn-s" style="margin-top:0" onclick="skipR()">Listo, continuar</button>
+</div>`;
+}
+
+function rDone(){
+ const p=ph(),list=exs();
+ const elapsed=S.startTime?Math.max(1,Math.round((Date.now()-S.startTime)/60000)):30;
+ const ts=list.reduce((a,e)=>a+e.s,0);
+ const w=S.water;
+ return `
+<div class="done-wrap">
+ <div class="done-ico">🏆</div>
+ <div class="done-ttl">¡COMPLETADO!</div>
+ <div class="done-sub">Semana ${S.week} · Día ${S.day} · ${DAYS[S.day-1].name}</div>
+ <div class="stats">
+  <div class="stat"><div class="stat-n" style="color:${p.color}">${elapsed}</div><div class="stat-l">MIN</div></div>
+  <div class="stat"><div class="stat-n" style="color:${p.color}">${ts}</div><div class="stat-l">SERIES</div></div>
+  <div class="stat"><div class="stat-n" style="color:${p.color}">${list.length}</div><div class="stat-l">EJERCICIOS</div></div>
+ </div>
+ <div class="note-card">
+  <div class="note-l">📝 REGISTRA EN NOTION AHORA</div>
+  <div class="note-t">Anota el peso de tu mochila, cómo te sentiste y qué ejercicio fue más difícil. Eso construye progreso real semana a semana.</div>
+ </div>
+ <div class="water-wrap" style="text-align:left;margin-bottom:20px">
+  <div class="water-hdr">
+   <div class="water-title">💧 HIDRATACIÓN</div>
+   <div class="water-stat">${w}/8 · ${(w*.3).toFixed(1)}L / 2.4L</div>
+  </div>
+  <div class="glasses">
+   ${[...Array(8)].map((_,i)=>`<div class="glass ${w>i?"on":""}" onclick="tapW(${i})"><div class="gfill" style="height:${w>i?100:0}%"></div><div class="gico">🥛</div><div class="gnum">${i+1}</div></div>`).join("")}
+  </div>
+  <div class="wbar" style="margin-top:8px"><div class="wfill" style="width:${(w/8*100).toFixed(0)}%"></div></div>
+  <div style="font-size:12px;color:${w>=8?"#22c55e":"#555"};margin-top:7px;font-weight:600">${w>=8?"✅ META DE AGUA ALCANZADA":8-w+" vasos más para tu meta diaria"}</div>
+ </div>
+ <button class="btn-go" onclick="goHome()">← VOLVER AL INICIO</button>
+</div>`;
+}
+
+// ═══════════════════════════════════════
+//  ACCIONES
+// ═══════════════════════════════════════
+function setW(w){S.week=w;render();}
+function setD(d){S.day=d;render();}
+
+function startW(){
+ S.screen="workout";S.exIdx=0;S.doneSets=[];
+ S.startTime=Date.now();S.timerRunning=false;
+ clearInterval(S.timerInt);
+ const ex=cur();
+ if(ex.t==="time"){S.timerVal=ex.d;S.timerMax=ex.d;}
+ else{S.timerVal=0;S.timerMax=0;}
+ render();
+}
+
+function compSet(){
+ if(!S.doneSets[S.exIdx])S.doneSets[S.exIdx]=0;
+ S.doneSets[S.exIdx]++;
+ const ex=cur();
+ if(S.doneSets[S.exIdx]<ex.s&&ex.rest>0){startRest(ex.rest);}
+ else render();
+}
+
+function startT(){
+ const ex=cur();
+ if(S.timerVal<=0){S.timerVal=ex.d;S.timerMax=ex.d;}
+ S.timerRunning=true;
+ clearInterval(S.timerInt);
+ S.timerInt=setInterval(()=>{
+  S.timerVal--;
+  if(S.timerVal<=0){
+   clearInterval(S.timerInt);S.timerRunning=false;S.timerVal=0;
+   if(!S.doneSets[S.exIdx])S.doneSets[S.exIdx]=0;
+   S.doneSets[S.exIdx]++;
+   const ex2=cur();
+   if(S.doneSets[S.exIdx]<ex2.s&&ex2.rest>0){startRest(ex2.rest);}
+   else render();
+   return;
+  }
+  render();
+ },1000);
+ render();
+}
+
+function pauseT(){clearInterval(S.timerInt);S.timerRunning=false;render();}
+
+function startRest(secs){
+ S.screen="rest";S.timerVal=secs;S.timerMax=secs;S.timerRunning=true;
+ clearInterval(S.timerInt);
+ S.timerInt=setInterval(()=>{
+  S.timerVal--;
+  if(S.timerVal<=0){clearInterval(S.timerInt);S.timerRunning=false;afterRest();return;}
+  render();
+ },1000);
+ render();
+}
+
+function afterRest(){
+ const ex=cur();
+ if(ex.t==="time"){S.timerVal=ex.d;S.timerMax=ex.d;}
+ else{S.timerVal=0;S.timerMax=0;}
+ S.screen="workout";render();
+}
+
+function skipR(){clearInterval(S.timerInt);S.timerRunning=false;afterRest();}
+
+function nextEx(){
+ clearInterval(S.timerInt);S.timerRunning=false;
+ if(S.exIdx<exs().length-1){
+  S.exIdx++;
+  const nx=cur();
+  if(nx.t==="time"){S.timerVal=nx.d;S.timerMax=nx.d;}
+  else{S.timerVal=0;S.timerMax=0;}
+ }
+ render();
+}
+
+function finishW(){clearInterval(S.timerInt);S.screen="done";render();}
+function goHome(){clearInterval(S.timerInt);S.timerRunning=false;S.screen="home";render();}
+function tapW(i){S.water=S.water===i+1?i:i+1;render();}
+
+render();
+</script>
+</body>
+</html>
