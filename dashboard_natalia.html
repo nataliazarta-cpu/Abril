@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Integral - Natalia Zarta</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; }
+.glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+.glow { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+.progress-ring { transform: rotate(-90deg); }
+.routine-active { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-left: 4px solid #a78bfa; }
+.routine-done { background: rgba(34, 197, 94, 0.15); border-left: 4px solid #22c55e; opacity: 0.7; }
+.routine-pending { background: rgba(30, 41, 59, 0.5); border-left: 4px solid #475569; }
+@keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+.pulse-live { animation: pulse-soft 2s infinite; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- Header -->
+<header class="glass sticky top-0 z-50 px-6 py-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">NZ</div>
+      <div>
+        <h1 class="text-xl font-bold text-white">Dashboard Integral</h1>
+        <p class="text-xs text-slate-400">Natalia Zarta • Abril 2026</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="text-right">
+        <div id="live-clock" class="text-2xl font-mono font-bold text-indigo-400">--:--:--</div>
+        <div id="live-date" class="text-xs text-slate-400">Cargando...</div>
+      </div>
+      <button onclick="refreshAllData()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+        <i class="fas fa-sync-alt" id="refresh-icon"></i> Actualizar
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
+  <!-- RUTINA DEL DÍA - TIMELINE EN VIVO -->
+  <section>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <i class="fas fa-sun text-yellow-400"></i> Mi Rutina Ideal Hoy
+      </h2>
+      <span id="current-phase" class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white pulse-live">Cargando fase...</span>
+    </div>
+
+    <div class="glass rounded-2xl p-6">
+      <div id="routine-timeline" class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+        <!-- Se llena con JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRESO DE ARTEFACTOS -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- WORKOUT -->
+    <section class="glass rounded-2xl p-6 glow">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fas fa-dumbbell text-orange-400"></i> Workout
+        </h3>
+        <span class="text-xs px-2 py-1 rounded bg-orange-500/20 text-orange-300">30 min/día</span>
+      </div>
+      <div id="workout-content" class="space-y-3">
+        <div class="animate-pulse space-y-3">
+          <div class="h-4 bg-slate-700 rounded w-3/4"></div>
+          <div class="h-4 bg-slate-700 rounded w-1/2"></div>
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-slate-700">
+        <a href="https://nataliazarta-cpu.github.io/Abril/WORKOUT.html" target="_blank" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+          <i class="fas fa-external-link-alt"></i> Ver artefacto completo
+        </a>
+      </div>
+    </section>
+
+    <!-- DEVOCIONAL -->
+    <section class="glass rounded-2xl p-6 glow">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fas fa-book-bible text-emerald-400"></i> Devocional
+        </h3>
+        <span class="text-xs px-2 py-1 rounded bg-emerald-500/20 text-emerald-300">30 min/día</span>
+      </div>
+      <div id="devocional-content" class="space-y-3">
+        <div class="animate-pulse space-y-3">
+          <div class="h-4 bg-slate-700 rounded w-3/4"></div>
+          <div class="h-4 bg-slate-700 rounded w-1/2"></div>
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-slate-700">
+        <a href="https://nataliazarta-cpu.github.io/Abril/DEVOCIONAL.html" target="_blank" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+          <i class="fas fa-external-link-alt"></i> Ver artefacto completo
+        </a>
+      </div>
+    </section>
+
+    <!-- INGLÉS -->
+    <section class="glass rounded-2xl p-6 glow">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fas fa-language text-blue-400"></i> Inglés
+        </h3>
+        <span class="text-xs px-2 py-1 rounded bg-blue-500/20 text-blue-300">30 min/día</span>
+      </div>
+      <div id="ingles-content" class="space-y-3">
+        <div class="animate-pulse space-y-3">
+          <div class="h-4 bg-slate-700 rounded w-3/4"></div>
+          <div class="h-4 bg-slate-700 rounded w-1/2"></div>
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-slate-700">
+        <a href="https://nataliazarta-cpu.github.io/Abril/INGLES.html" target="_blank" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+          <i class="fas fa-external-link-alt"></i> Ver artefacto completo
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- RESUMEN DIARIO -->
+  <section class="glass rounded-2xl p-6">
+    <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+      <i class="fas fa-chart-pie text-purple-400"></i> Resumen del Día
+    </h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-indigo-400" id="total-routine">19</div>
+        <div class="text-xs text-slate-400 mt-1">Actividades hoy</div>
+      </div>
+      <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-orange-400" id="workout-status">--</div>
+        <div class="text-xs text-slate-400 mt-1">Workout hoy</div>
+      </div>
+      <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-emerald-400" id="devocional-status">--</div>
+        <div class="text-xs text-slate-400 mt-1">Devocional hoy</div>
+      </div>
+      <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-blue-400" id="ingles-status">--</div>
+        <div class="text-xs text-slate-400 mt-1">Inglés hoy</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// ==================== RUTINA IDEAL ====================
+const routineData = [
+  { time: "06:00", end: "06:30", name: "🙏 Devocional personal", desc: "Oración + lectura bíblica + 1 reflexión escrita", area: "Espiritual", duration: 30 },
+  { time: "06:30", end: "07:00", name: "🏃‍♀️ Ejercicio + podcast", desc: "Activación física + contenido edificante", area: "Física", duration: 30 },
+  { time: "07:00", end: "07:15", name: "🧖‍♀️ Alistamiento personal", desc: "Cuidado personal rápido", area: "Personal", duration: 15 },
+  { time: "07:15", end: "08:00", name: "🍽️ Desayuno con Sofía", desc: "Desayuno y preparación de salida al jardín", area: "Familiar", duration: 45 },
+  { time: "08:00", end: "08:00", name: "🚗 Llevar a Sofía al jardín", desc: "Confirmar mochila y documentos", area: "Familiar", duration: 0 },
+  { time: "08:00", end: "10:00", name: "⚡ Trabajo profundo – Tareas A", desc: "Actividades estratégicas sin interrupciones", area: "Profesional", duration: 120 },
+  { time: "10:00", end: "11:30", name: "🎯 Enfoque del día", desc: "Bloque estratégico según el día de la semana", area: "Profesional", duration: 90 },
+  { time: "11:30", end: "12:00", name: "🇬🇧 Inglés diario", desc: "App + vocabulario + escucha activa", area: "Formación", duration: 30 },
+  { time: "12:00", end: "12:30", name: "🍳 Preparación almuerzo", desc: "Preparar almuerzo mientras lectura ligera", area: "Hogar", duration: 30 },
+  { time: "12:30", end: "12:30", name: "🧺 Recoger a Sofía", desc: "Recoger a Sofía del jardín", area: "Familiar", duration: 0 },
+  { time: "13:00", end: "14:00", name: "🍽️ Almuerzo familiar", desc: "Tiempo de comida y descanso", area: "Familiar", duration: 60 },
+  { time: "14:00", end: "14:30", name: "👶 Juego intencional con Sofía", desc: "Actividad guiada con principio bíblico", area: "Familiar", duration: 30 },
+  { time: "14:30", end: "14:30", name: "😴 Dormir a Sofía", desc: "Rutina de siesta/descanso", area: "Familiar", duration: 0 },
+  { time: "14:30", end: "17:00", name: "🧠 Trabajo operativo – Tareas C", desc: "Correos, seguimiento, administrativas", area: "Profesional", duration: 150 },
+  { time: "17:00", end: "18:00", name: "🏠 Organización del hogar", desc: "Orden, limpieza ligera, logística", area: "Hogar", duration: 60 },
+  { time: "18:00", end: "19:00", name: "🍽️ Cena / Preparación", desc: "Cocinar y cenar con la familia", area: "Familiar", duration: 60 },
+  { time: "19:00", end: "20:00", name: "👨‍👩‍👧 Altar familiar", desc: "Devocional en familia, oración y enseñanza", area: "Espiritual", duration: 60 },
+  { time: "20:00", end: "21:00", name: "🌙 Alistamiento y resumen", desc: "Higiene, 1 logro, 1 mejora", area: "Personal", duration: 60 },
+  { time: "21:00", end: "21:00", name: "🛌 Dormir", desc: "Hora de dormir", area: "Descanso", duration: 0 }
+];
+
+const weeklyFocus = {
+  1: "📖 Fundamentos cristianos – Estudio bíblico profundo",
+  2: "🌱 Madurez personal – Formación y crecimiento",
+  3: "🤝 Relaciones maduras – Networking y mentorías",
+  4: "👩‍👧 Maternidad y familia – Planificación con Sofía",
+  5: "🚀 Productividad y carrera – Estrategia profesional",
+  6: "📚 Lectura edificante – Lectura reflexiva",
+  0: "🕊️ Descanso y reflexión – Iglesia y evaluación"
+};
+
+function getRoutineStatus(item, now) {
+  const start = new Date();
+  const [sh, sm] = item.time.split(':');
+  start.setHours(parseInt(sh), parseInt(sm), 0);
+
+  const end = new Date();
+  const [eh, em] = item.end.split(':');
+  end.setHours(parseInt(eh), parseInt(em), 0);
+
+  if (now > end) return 'done';
+  if (now >= start && now <= end) return 'active';
+  return 'pending';
+}
+
+function renderRoutine() {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const container = document.getElementById('routine-timeline');
+
+  let html = '';
+  let currentFound = false;
+
+  routineData.forEach((item, idx) => {
+    const status = getRoutineStatus(item, now);
+    const statusClass = status === 'active' ? 'routine-active' : status === 'done' ? 'routine-done' : 'routine-pending';
+    const icon = status === 'done' ? '✅' : status === 'active' ? '▶️' : '⏳';
+
+    if (status === 'active' && !currentFound) {
+      document.getElementById('current-phase').textContent = `Ahora: ${item.name}`;
+      currentFound = true;
+    }
+
+    // Si es el bloque de enfoque, mostrar el enfoque semanal
+    let displayName = item.name;
+    let displayDesc = item.desc;
+    if (item.name.includes("Enfoque del día")) {
+      displayDesc = weeklyFocus[dayOfWeek] || item.desc;
+    }
+
+    html += `
+      <div class="${statusClass} rounded-xl p-4 transition-all duration-300 ${status === 'active' ? 'pulse-live' : ''}">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-lg">${icon}</span>
+              <span class="font-bold text-white">${displayName}</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300">${item.area}</span>
+            </div>
+            <p class="text-sm text-slate-400 ml-7">${displayDesc}</p>
+          </div>
+          <div class="text-right ml-4">
+            <div class="text-sm font-mono font-bold text-slate-300">${item.time}</div>
+            ${item.duration > 0 ? `<div class="text-xs text-slate-500">${item.duration} min</div>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  if (!currentFound) {
+    const hour = now.getHours();
+    if (hour < 6) document.getElementById('current-phase').textContent = '🌙 Descanso nocturno';
+    else if (hour >= 21) document.getElementById('current-phase').textContent = '🌙 Fin del día';
+    else document.getElementById('current-phase').textContent = '📅 Fuera de horario rutina';
+  }
+
+  container.innerHTML = html;
+}
+
+// ==================== RELOJ EN VIVO ====================
+function updateClock() {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('es-CO', { hour12: false });
+  const dateStr = now.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('live-clock').textContent = timeStr;
+  document.getElementById('live-date').textContent = dateStr;
+}
+
+// ==================== FETCH ARTEFACTOS ====================
+async function fetchWorkout() {
+  try {
+    const response = await fetch('https://nataliazarta-cpu.github.io/Abril/WORKOUT.html');
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+
+    // Extraer datos del workout - buscamos checkboxes o progreso
+    const checkboxes = doc.querySelectorAll('input[type="checkbox"]');
+    const total = checkboxes.length;
+    const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+    const percent = total > 0 ? Math.round((checked / total) * 100) : 0;
+
+    document.getElementById('workout-content').innerHTML = `
+      <div class="flex items-center justify-center mb-4">
+        <svg class="w-24 h-24" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="#1e293b" stroke-width="8"/>
+          <circle cx="50" cy="50" r="45" fill="none" stroke="#f97316" stroke-width="8" 
+            stroke-dasharray="${2 * Math.PI * 45}" 
+            stroke-dashoffset="${2 * Math.PI * 45 * (1 - percent/100)}"
+            class="progress-ring" transform="rotate(-90 50 50)"/>
+          <text x="50" y="55" text-anchor="middle" fill="white" font-size="20" font-weight="bold">${percent}%</text>
+        </svg>
+      </div>
+      <div class="text-center text-sm text-slate-400">${checked}/${total} ejercicios completados</div>
+      <div class="mt-3 space-y-2">
+        <div class="flex justify-between text-sm"><span class="text-slate-400">Estado:</span><span class="text-orange-400 font-medium">${percent >= 80 ? '✅ Completado' : percent > 0 ? '🔄 En progreso' : '⏳ Pendiente'}</span></div>
+      </div>
+    `;
+    document.getElementById('workout-status').textContent = percent + '%';
+  } catch (e) {
+    document.getElementById('workout-content').innerHTML = '<div class="text-center text-slate-500 py-8">No se pudo cargar el workout. Verifica la conexión.</div>';
+    document.getElementById('workout-status').textContent = '?';
+  }
+}
+
+async function fetchDevocional() {
+  try {
+    const response = await fetch('https://nataliazarta-cpu.github.io/Abril/DEVOCIONAL.html');
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+
+    // Extraer título y contenido principal
+    const title = doc.querySelector('h1, h2, .title')?.textContent || 'Bitácora de Reforma Diaria';
+    const scripture = doc.body.textContent.match(/"([^"]+)"/)?.[1] || 'Efesios 4:23';
+    const reading = doc.body.textContent.match(/2 Reyes (\d+[-\d]*)/)?.[0] || '2 Reyes 23-24';
+
+    document.getElementById('devocional-content').innerHTML = `
+      <div class="space-y-3">
+        <div class="bg-emerald-500/10 rounded-lg p-3 border border-emerald-500/20">
+          <div class="text-xs text-emerald-400 mb-1">Versículo de hoy</div>
+          <div class="text-sm text-white italic">"${scripture}"</div>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-400">Lectura:</span>
+          <span class="text-emerald-300">${reading}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-400">Examen:</span>
+          <span class="text-emerald-300">El Cincel de Josías</span>
+        </div>
+        <div class="mt-2 text-xs text-slate-500">Última actualización: ${new Date().toLocaleDateString()}</div>
+      </div>
+    `;
+    document.getElementById('devocional-status').textContent = '✓';
+  } catch (e) {
+    document.getElementById('devocional-content').innerHTML = '<div class="text-center text-slate-500 py-8">No se pudo cargar el devocional.</div>';
+    document.getElementById('devocional-status').textContent = '?';
+  }
+}
+
+async function fetchIngles() {
+  try {
+    const response = await fetch('https://nataliazarta-cpu.github.io/Abril/INGLES.html');
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+
+    // Extraer progreso
+    const progressText = doc.body.textContent;
+    const daysMatch = progressText.match(/(\d+)\s*días?/);
+    const percentMatch = progressText.match(/(\d+)%/);
+    const days = daysMatch ? daysMatch[1] : '65';
+    const percent = percentMatch ? percentMatch[1] : '0';
+
+    // Buscar actividades
+    const activities = ['Open English', 'ESLA', 'STIMULER', 'LEARNA IA', 'Practicar Canción', 'Escuchar', 'Diario'];
+    let activitiesHtml = '';
+    activities.forEach(act => {
+      if (progressText.includes(act)) {
+        activitiesHtml += `<div class="flex items-center gap-2 text-sm"><span class="w-2 h-2 rounded-full bg-blue-400"></span><span class="text-slate-300">${act}</span></div>`;
+      }
+    });
+
+    document.getElementById('ingles-content').innerHTML = `
+      <div class="flex items-center justify-center mb-4">
+        <div class="relative w-24 h-24">
+          <svg class="w-24 h-24" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#1e293b" stroke-width="8"/>
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#3b82f6" stroke-width="8" 
+              stroke-dasharray="${2 * Math.PI * 45}" 
+              stroke-dashoffset="${2 * Math.PI * 45 * (1 - parseInt(percent)/100)}"
+              transform="rotate(-90 50 50)"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center">
+              <div class="text-lg font-bold text-white">${percent}%</div>
+              <div class="text-xs text-slate-400">${days} días</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="space-y-2 mt-3">
+        ${activitiesHtml || '<div class="text-sm text-slate-500">Actividades cargadas</div>'}
+      </div>
+      <div class="mt-3 text-xs text-slate-500">Meta: A1 → B2</div>
+    `;
+    document.getElementById('ingles-status').textContent = percent + '%';
+  } catch (e) {
+    document.getElementById('ingles-content').innerHTML = '<div class="text-center text-slate-500 py-8">No se pudo cargar el tracker de inglés.</div>';
+    document.getElementById('ingles-status').textContent = '?';
+  }
+}
+
+function refreshAllData() {
+  const icon = document.getElementById('refresh-icon');
+  icon.classList.add('fa-spin');
+
+  Promise.all([
+    fetchWorkout(),
+    fetchDevocional(),
+    fetchIngles(),
+    renderRoutine()
+  ]).then(() => {
+    setTimeout(() => icon.classList.remove('fa-spin'), 1000);
+  });
+}
+
+// ==================== INICIALIZACIÓN ====================
+setInterval(updateClock, 1000);
+setInterval(renderRoutine, 60000); // Actualizar rutina cada minuto
+updateClock();
+renderRoutine();
+refreshAllData();
+</script>
+
+</body>
+</html>
