@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --accent: #64748b;
+            --glass: rgba(255, 255, 255, 0.7);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: #334155;
+            background-image: radial-gradient(circle at 10% 20%, rgba(226, 232, 240, 0.5) 0%, transparent 50%);
+        }
+        h1, h2 { font-family: 'Libre+Baskerville', serif; }
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        .checkbox-custom:checked + label {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+        .animate-subtle { transition: all 0.3s ease; }
+        .progress-bar { transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="min-h-screen py-12 px-4">
+
+    <div class="max-w-2xl mx-auto space-y-8">
+        
+        <!-- Header & Progress -->
+        <header class="text-center space-y-4">
+            <h1 class="text-3xl font-bold text-slate-800">Bitácora de Reforma Diaria</h1>
+            <p class="text-slate-500 italic text-sm">"Renovaos en el espíritu de vuestra mente" — Efesios 4:23</p>
+            
+            <div class="mt-6">
+                <div class="flex justify-between text-xs mb-2 px-1">
+                    <span class="font-medium uppercase tracking-wider text-slate-400">Progreso del Día</span>
+                    <span id="progress-text" class="text-slate-600">0%</span>
+                </div>
+                <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                    <div id="progress-fill" class="bg-slate-500 h-full progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Rutina de Fundamentos (Lunes) -->
+        <section class="glass rounded-2xl p-6 space-y-4">
+            <h2 class="text-xl text-slate-700 border-b border-slate-100 pb-2">Rutina: Cimientos y Ministerio</h2>
+            <div class="space-y-3">
+                <div class="flex items-center space-x-3">
+                    <input type="checkbox" id="task1" class="checkbox-custom w-5 h-5 rounded border-slate-300 text-slate-600 focus:ring-slate-400" onchange="updateProgress()">
+                    <label for="task1" class="text-sm cursor-pointer select-none">Oración inicial: Entrega de ídolos y ambiciones.</label>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <input type="checkbox" id="task2" class="checkbox-custom w-5 h-5 rounded border-slate-300 text-slate-600 focus:ring-slate-400" onchange="updateProgress()">
+                    <label for="task2" class="text-sm cursor-pointer select-none">Lectura profunda (2 Reyes 23-24).</label>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <input type="checkbox" id="task3" class="checkbox-custom w-5 h-5 rounded border-slate-300 text-slate-600 focus:ring-slate-400" onchange="updateProgress()">
+                    <label for="task3" class="text-sm cursor-pointer select-none">Planificación estratégica bajo la soberanía de Dios.</label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reflexión Devocional -->
+        <section class="glass rounded-2xl p-6 space-y-4">
+            <h2 class="text-xl text-slate-700 border-b border-slate-100 pb-2">Examen: El Cincel de Josías</h2>
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <p class="text-xs font-bold uppercase text-slate-400 tracking-widest">Punto Focal</p>
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" id="dev1" class="checkbox-custom mt-1 w-5 h-5 rounded border-slate-300 text-slate-600" onchange="updateProgress()">
+                        <label for="dev1" class="text-sm italic">¿He identificado hoy mi "Libro de la Ley" olvidado? (La verdad que he ignorado).</label>
+                    </div>
+                </div>
+                
+                <div class="space-y-2">
+                    <p class="text-xs font-bold uppercase text-slate-400 tracking-widest">Hermenéutica & Léxico</p>
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" id="dev2" class="checkbox-custom mt-1 w-5 h-5 rounded border-slate-300 text-slate-600" onchange="updateProgress()">
+                        <label for="dev2" class="text-sm italic">¿Hice "Shub" (giro de 180°) ante una corrección de la Palabra?</label>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <p class="text-xs font-bold uppercase text-slate-400 tracking-widest">Cristo</p>
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" id="dev3" class="checkbox-custom mt-1 w-5 h-5 rounded border-slate-300 text-slate-600" onchange="updateProgress()">
+                        <label for="dev3" class="text-sm italic">¿Descansé en que Cristo es el Rey que sí cumplió toda la Ley por mí?</label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Toma de Notas Interactiva -->
+        <section class="glass rounded-2xl p-6 space-y-4">
+            <h2 class="text-xl text-slate-700">Notas de Reforma</h2>
+            <textarea class="w-full bg-white/50 p-4 rounded-xl border border-slate-200 focus:ring-2 focus:ring-slate-300 focus:outline-none h-40 text-sm placeholder-slate-400" placeholder="Escribe lo que el Espíritu Santo está reformando en tu corazón hoy..."></textarea>
+            <div class="flex justify-between items-center">
+                <span class="text-[10px] text-slate-400 uppercase">Soli Deo Gloria</span>
+                <button class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-slate-700 transition" onclick="alert('Notas guardadas en tu corazón (y localmente en sesión)')">Guardar Reflexión</button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center pt-8 border-t border-slate-200">
+            <p class="text-[10px] tracking-[0.2em] text-slate-400 uppercase">Por: Natalia Zarta</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked');
+            const percentage = Math.round((checked.length / checkboxes.length) * 100);
+            
+            document.getElementById('progress-fill').style.width = percentage + '%';
+            document.getElementById('progress-text').innerText = percentage + '%';
+        }
+    </script>
+</body>
+</html>
