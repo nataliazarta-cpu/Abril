@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker Inglés - Natalia Zarta</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            margin: 0;
+            padding: 15px;
+            min-height: 100vh;
+            color: #1e2937;
+        }
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        h1 { margin: 0; font-size: 27px; }
+        .subtitle { margin: 6px 0 0; font-size: 15px; opacity: 0.95; }
+
+        .stats {
+            padding: 20px 24px;
+            background: #f8fafc;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+        }
+        .stat-value { font-size: 27px; font-weight: bold; color: #6366f1; }
+        .stat-label { font-size: 13px; color: #64748b; }
+
+        .progress-section {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .chart-container { height: 170px; margin: 12px 0; }
+
+        .phase-selector {
+            padding: 15px 24px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+        .phase-btn {
+            padding: 13px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .phase-btn.active {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
+        .daily-tracker { padding: 10px 24px 30px; }
+        .day-card {
+            background: #f8fafc;
+            margin-bottom: 18px;
+            padding: 18px;
+            border-radius: 16px;
+            border-left: 6px solid #6366f1;
+        }
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .day-title { font-size: 18px; font-weight: bold; color: #4f46e5; }
+
+        .activity {
+            background: white;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .activity input[type="checkbox"] {
+            width: 26px; height: 26px; margin-right: 16px;
+            accent-color: #6366f1;
+        }
+        .activity-label { flex: 1; font-size: 16px; }
+        .activity-time { color: #666; font-size: 14px; }
+
+        .notes-textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-top: 12px;
+            min-height: 85px;
+        }
+
+        .action-buttons {
+            padding: 0 24px 25px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-primary { background: #6366f1; color: white; }
+        .btn-secondary { background: #e2e8f0; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Mi Tracker Inglés</h1>
+            <p class="subtitle">Natalia Zarta • A1 → B2</p>
+        </header>
+
+        <div class="stats">
+            <div><div class="stat-value" id="daysCompleted">0</div><div class="stat-label">Días completados</div></div>
+            <div><div class="stat-value" id="totalHours">0</div><div class="stat-label">Horas totales</div></div>
+            <div><div class="stat-value" id="currentLevel">A1</div><div class="stat-label">Nivel estimado</div></div>
+        </div>
+
+        <div class="progress-section">
+            <h3 style="margin-bottom:8px;">📈 Progreso General (65 días)</h3>
+            <div class="chart-container">
+                <canvas id="progressChart"></canvas>
+            </div>
+            <div style="text-align:center; font-weight:bold; margin-top:8px;" id="progressPercent">0% completado</div>
+        </div>
+
+        <div class="phase-selector">
+            <button class="phase-btn active" data-phase="1">Fase 1 - A1→A2</button>
+            <button class="phase-btn" data-phase="2">Fase 2 - A2→B1</button>
+            <button class="phase-btn" data-phase="3">Fase 3 - B1→B2</button>
+        </div>
+
+        <div class="daily-tracker" id="dailyTracker"></div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="saveProgress()">💾 Guardar Progreso</button>
+            <button class="btn btn-secondary" onclick="resetCurrentWeek()">🔄 Resetear Semana</button>
+            <button class="btn btn-secondary" onclick="downloadProgress()">⬇️ Descargar Backup</button>
+            <button class="btn btn-secondary" onclick="loadFromFile()">⬆️ Cargar Backup</button>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" accept=".json" style="display:none;" onchange="handleFileUpload(event)">
+
+    <script>
+        const activities = [
+            "Open English", "ESLA", "STIMULER", "LEARNA IA",
+            "Practicar Canción", "Escuchar en Inglés", "Diario"
+        ];
+        const times = ["30 min", "25 min", "20 min", "20 min", "15 min", "30 min", "10 min"];
+
+        let currentPhase = 1;
+        let progressData = {};   // clave: phase1_day0, etc.
+
+        let chart;
+
+        function init() {
+            // Intentar cargar de localStorage si está disponible
+            try {
+                const saved = localStorage.getItem('englishProgress');
+                if (saved) progressData = JSON.parse(saved);
+                const savedPhase = localStorage.getItem('currentPhase');
+                if (savedPhase) currentPhase = parseInt(savedPhase);
+            } catch(e) {
+                console.log("localStorage no disponible, usando memoria temporal");
+            }
+
+            setupPhaseButtons();
+            renderDailyTracker();
+            updateStats();
+            createProgressChart();
+        }
+
+        function setupPhaseButtons() {
+            document.querySelectorAll('.phase-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentPhase = parseInt(btn.dataset.phase);
+                    document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderDailyTracker();
+                    updateStats();
+                });
+            });
+        }
+
+        function renderDailyTracker() {
+            const container = document.getElementById('dailyTracker');
+            container.innerHTML = '';
+
+            const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+
+            for (let i = 0; i < 5; i++) {
+                const dayKey = `phase${currentPhase}_day${i}`;
+                const dayData = progressData[dayKey] || { completed: [], notes: '' };
+
+                let activitiesHTML = '';
+                activities.forEach((act, idx) => {
+                    const checked = dayData.completed.includes(idx) ? 'checked' : '';
+                    activitiesHTML += `
+                        <div class="activity">
+                            <input type="checkbox" ${checked} onchange="toggleActivity('${dayKey}', ${idx})">
+                            <span class="activity-label">${act}</span>
+                            <span class="activity-time">${times[idx]}</span>
+                        </div>
+                    `;
+                });
+
+                const cardHTML = `
+                    <div class="day-card">
+                        <div class="day-header">
+                            <div class="day-title">${days[i]}</div>
+                            <div style="font-weight:bold;" id="comp_${dayKey}">${dayData.completed.length}/7</div>
+                        </div>
+                        ${activitiesHTML}
+                        <textarea class="notes-textarea" placeholder="Notas del día..." 
+                                  onchange="saveNotes('${dayKey}', this.value)">${dayData.notes || ''}</textarea>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            }
+        }
+
+        function toggleActivity(dayKey, idx) {
+            if (!progressData[dayKey]) progressData[dayKey] = { completed: [], notes: '' };
+
+            const list = progressData[dayKey].completed;
+            if (list.includes(idx)) {
+                list.splice(list.indexOf(idx), 1);
+            } else {
+                list.push(idx);
+            }
+
+            document.getElementById(`comp_${dayKey}`).textContent = `${list.length}/7`;
+            updateStats();
+            saveProgress();
+
+            if (list.length === 7) {
+                alert("🎉 ¡Muy bien Natalia! Día completado.");
+            }
+        }
+
+        function saveNotes(dayKey, notes) {
+            if (!progressData[dayKey]) progressData[dayKey] = { completed: [], notes: '' };
+            progressData[dayKey].notes = notes;
+            saveProgress();
+        }
+
+        function updateStats() {
+            let completed = 0;
+            let hours = 0;
+
+            Object.keys(progressData).forEach(key => {
+                if (progressData[key].completed && progressData[key].completed.length === 7) {
+                    completed++;
+                    hours += 2.5;
+                }
+            });
+
+            document.getElementById('daysCompleted').textContent = completed;
+            document.getElementById('totalHours').textContent = Math.round(hours);
+
+            let level = 'A1';
+            if (hours >= 90) level = 'B1-B2';
+            else if (hours >= 55) level = 'A2-B1';
+            else if (hours >= 25) level = 'A2';
+            document.getElementById('currentLevel').textContent = level;
+
+            if (chart) {
+                chart.data.datasets[0].data = [completed];
+                chart.update();
+            }
+            document.getElementById('progressPercent').textContent = Math.round((completed / 65) * 100) + '% completado';
+        }
+
+        function createProgressChart() {
+            const ctx = document.getElementById('progressChart');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Progreso'],
+                    datasets: [{
+                        label: 'Días completados',
+                        data: [0],
+                        backgroundColor: '#6366f1',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: { x: { max: 65, beginAtZero: true } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem('englishProgress', JSON.stringify(progressData));
+                localStorage.setItem('currentPhase', currentPhase);
+            } catch(e) {
+                console.log("No se pudo guardar en localStorage");
+            }
+        }
+
+        function downloadProgress() {
+            const dataStr = JSON.stringify(progressData, null, 2);
+            const blob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `english_progress_natalia_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function loadFromFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    progressData = JSON.parse(ev.target.result);
+                    renderDailyTracker();
+                    updateStats();
+                    alert("✅ Progreso cargado correctamente");
+                } catch(err) {
+                    alert("Error al leer el archivo");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetCurrentWeek() {
+            if (confirm("¿Quieres resetear el progreso de esta semana?")) {
+                for (let i = 0; i < 5; i++) {
+                    delete progressData[`phase${currentPhase}_day${i}`];
+                }
+                renderDailyTracker();
+                updateStats();
+                saveProgress();
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
